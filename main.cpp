@@ -49,43 +49,24 @@ void fecha(char fcm[]) {
     sprintf(fcm, "%i%i%i", d, m, y);
 }
 
-void MKD(l_nodo** P, int x) {
+void MKD(l_nodo** P, char Nombre[9], int h, int r) {
     l_nodo* t, * aux = *P, *bux;
-    char txt[9];
-    while (x) {
-        system("cls");
-        printf("-----------------------------------------\n");
-        printf("Manejo Virtual de Archivos (MVA)\n");
-        printf("1.Crear directorio (MKD):\n");
-        printf("-----------------------------------------\n\n");
-        printf("1.\tNombre del directorio a crear:\n");
-        printf("0.\tRegresar.\n");
-        printf("Su opcion [0-1]:\n");
-        scanf("%i", &x);
-        aux = *P;
-        system("cls");
-
-        switch (x) {
-        case 1:
-            printf("-----------------------------------------\n");
-            printf("Ingrese el nombre del directorio \n");
-            printf("-----------------------------------------\n\n");
-            scanf(" %8s", txt, 9);
+         
             t = new l_nodo;
-            strcpy_s(t->Nom, txt);
+            strcpy_s(t->Nom, Nombre);
             t->pUL = NULL;
             t->pFA = NULL;
             t->pPA = aux;
-            t->h = 0;
-            t->r = 0;
-           // fecha(t->fcm);
+            t->h = h;
+            t->r = r;
+            fecha(t->fcm);
             t->Tip = 'D';
             if (aux->pFA) {
                 bux = aux->pFA;
                 aux = aux->pFA;  
                
                  do{
-                    if (verificarExist(bux, txt) == 1) {
+                    if (verificarExist(bux, Nombre) == 1) {
                        
                             system("cls");
                             printf("-------------------------------------------------\n");
@@ -100,22 +81,14 @@ void MKD(l_nodo** P, int x) {
                  while (aux->pUL)
                      aux = aux->pUL;
                 aux->pUL = t;
-            }
+            
+			}
             else {
                 
                 aux->pFA = t;
-            }
-            break;
-        case 0:
-            break;
-        default:
-            printf("\tError, respuesta no valida\n");
-            system("pause");
-            break;
-        }
-    }
-}
-
+            
+			}
+}   
 
 void CHD(l_nodo** p, int x) {
     l_nodo* aux = *p;
@@ -952,6 +925,7 @@ void SHD(l_nodo* p, int x) {
         }
     }
 }
+
 void separarD(l_nodo* p, l_nodo* l ,l_nodo **AX,char dest[100], char Nom[9]){
 	l_nodo *ANT = NULL;
 	*AX = l ;
@@ -1034,17 +1008,19 @@ l_nodo *respuesta = NULL;
 	fflush(stdin);
 
 	
-	//fgets(str,100,stdin);
+	fgets(str,100,stdin);
 	//strcpy( str,  "MDD C:/temp/datos /n:info" );
 
 //strcpy( str,  " MKD  ./" );
 
-//strcpy( str,  "MKD C:/temp/datos /h" );
-	strcpy( str,  "MKD C:/temp1/datos /h /r" );
+//strcpy( str,  "MKD C:/temp/datos " );
+//strcpy( str,  "MKD C:/temp1/datos /r /h" );
 //strcpy( str,  "MKD C:/temp2/datos /h" );
 //strcpy( str,  "MKD ./../temp/hijo /h" );
 //strcpy( str,  "MKD ./../temp3 /h" );   
-//	strcpy( str,  "MKD ./../temp/datos /h" );
+//strcpy( str,  "MKD ./../temp/datos /h" );
+//strcpy( str,  "MKD C:/temp1 /h" );
+
 
 	fflush(stdin);
 	printf("%s\n", str);
@@ -1061,7 +1037,7 @@ l_nodo *respuesta = NULL;
 	printf(" ruta = %s\n", pos1 );
 	printf(" opacion1  = %s\n", pos2);
 	printf(" opcion2 = %s\n", pos3 );
-	printf(" opcion2 = %s\n", pos4 );
+	printf(" opcion3 = %s\n", pos4 );
 
 	// validacion cantidad de parametros dependiendo del comando
 	if (strcmp(Comando,"MKD") == 0 ) {
@@ -1091,32 +1067,42 @@ l_nodo *respuesta = NULL;
 
 	if ( strcmp(Comando,"MKD") == 0 ){
 	printf("entre\n");
+	
 
-	/*if (((strcmp (pos3,"h") == 0) || (strcmp (pos3,"r") == 0)) || ((strcmp (pos3,"H") == 0) || (strcmp (pos3,"R") == 0))){
-		if ((strcmp (pos3,"h") == 0) ||(strcmp (pos3,"H") == 0)){
+	if (pos3 == NULL){
+		op2 = 0;
+		op1 = 0;}
+	else{
+		if ((strcmp (pos3,"/h") == 0) ||(strcmp (pos3,"/H") == 0)){
 		op1 = 1;
 		}else
 		{op1 = 0; 
 		}
-		if ((strcmp (pos3,"R") == 0) ||(strcmp (pos3,"r") == 0)){
+		if ((strcmp (pos3,"/R") == 0) ||(strcmp (pos3,"/r") == 0)){
 		op2 = 1;
 		}
 		else {op2 = 0;
 		} 
 	}
-
-	if (((strcmp (pos2,"h") == 0) || (strcmp (pos2,"r") == 0)) || ((strcmp (pos2,"H") == 0) || (strcmp (pos2,"R") == 0))){
-		if ((strcmp (pos2,"h") == 0) ||(strcmp (pos2,"H") == 0)){
+	if (pos2 == NULL) {
+		op2 = 0;
+		op1 = 0;
+	}
+	else{if (op1 == 0) {
+		if ((strcmp (pos2,"/h") == 0) || (strcmp (pos2,"/H") == 0)){
 		op1 = 1;
 		}else
 		{op1 = 0; 
 		}
-		if ((strcmp (pos2,"R") == 0) ||(strcmp (pos2,"r") == 0)){
+	}
+		if (op2 == 0) {
+		if ((strcmp (pos2,"/R") == 0) ||(strcmp (pos2,"/r") == 0)){
 		op2 = 1;
 		}
 		else {op2 = 0;
 		} 
-	}*/
+	}
+}
 	printf ( "opcion1  = %i \n" , op1);
 	printf ( "opcion2  = %i \n" , op2);
 	system("pause");
@@ -1125,7 +1111,11 @@ l_nodo *respuesta = NULL;
 	separarD(*p,l,&respuesta,destino,strAX);
 	printf (" NOMBRE DEL DIR = %s \n" , respuesta->Nom);
 	printf (" NOMBRE DEL nuevo DIR = %s \n" , strAX);
+
+	MKD (&respuesta,strAX , op1, op2);
+
 	}	system("pause");
+
 	//else
 	/*if ( strcmp(token,"CHD") == 1 ) {
 		while (token != NULL){
