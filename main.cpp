@@ -952,6 +952,238 @@ void SHD(l_nodo* p, int x) {
         }
     }
 }
+void separarD(l_nodo* p, l_nodo* l ,l_nodo **AX,char dest[100], char Nom[9]){
+	l_nodo *ANT = NULL;
+	*AX = l ;
+	char *ruta;
+	int contador = 0;
+	ruta = strtok (dest,"/");
+	
+	while (ruta != NULL){		
+		
+		if (AX != NULL) 
+			 if (strcmp (ruta, ".") == 0){
+					*AX = p;
+				}else if (strcmp (ruta, "..") == 0){	
+					*AX = p->pPA->pFA;
+					ANT = (*AX)->pPA;
+				}else 
+			if(strcmp (ruta, (*AX)->Nom) == 0){
+				ANT = *AX;
+				if ((*AX)->pFA != NULL) *AX = (*AX)->pFA;
+				printf	("son iguales toke=%s \n" , ruta);
+			}else if ((*AX)->pUL) {
+				if ((strcmp (ruta, ".") != 0) || (strcmp (ruta, "..") != 0)){
+					while (AX){
+						if(strcmp (ruta, (*AX)->Nom) == 0){
+							printf	("son iguales , en hermanos \n");
+							if ((*AX)->pFA != NULL) 
+								*AX = (*AX)->pFA;
+							ANT = *AX;
+							break;
+						}
+						else {
+							if ((*AX)->pUL != NULL) {
+								*AX = (*AX)->pUL;
+								//ANT = *AX;
+							}else{
+								printf	("no son iguales , no tengo mas hermanos \n");
+								break;
+							}
+						}
+						}
+					}
+			}else
+			{
+
+			}
+ 
+		strcpy(Nom, ruta);
+		ruta = strtok(NULL, "/ ");
+		printf("token: %s\n", ruta);
+		if(ruta == NULL){
+			if ((strcmp (Nom, (*AX)->Nom)==0)){
+				ANT = ANT->pPA;
+				*AX =  ANT;
+			}
+		}
+/*		else{
+			if ((*AX)->pFA == NULL){
+				strcpy(Nom, ruta);
+				break;
+			}
+		}
+		*/
+	}
+	(*AX) = ANT;
+
+	printf	("saliendo  ANT NOM = %s \n" ,ANT->Nom);
+	printf("directorio: %s\n", Nom);
+
+}
+	
+	
+
+
+
+
+void tokenR(l_nodo **p, l_nodo* l){
+	int op1, op2;
+	char str[100], *Comando,*pos1,*pos2,*pos3,*pos4,*fuente,*unidad,destino[100], strAX[9];
+l_nodo *respuesta = NULL;
+	fflush(stdin);
+
+	
+	//fgets(str,100,stdin);
+	//strcpy( str,  "MDD C:/temp/datos /n:info" );
+
+//strcpy( str,  " MKD  ./" );
+
+//strcpy( str,  "MKD C:/temp/datos /h" );
+	strcpy( str,  "MKD C:/temp1/datos /h /r" );
+//strcpy( str,  "MKD C:/temp2/datos /h" );
+//strcpy( str,  "MKD ./../temp/hijo /h" );
+//strcpy( str,  "MKD ./../temp3 /h" );   
+//	strcpy( str,  "MKD ./../temp/datos /h" );
+
+	fflush(stdin);
+	printf("%s\n", str);
+
+	Comando = strtok(str, " ");
+	pos1 = strtok(NULL, " ");
+	pos2 = strtok(NULL, " ");
+	pos3 = strtok(NULL, " ");
+	pos4 = strtok(NULL, " ");
+
+
+
+	printf(" comando = %s\n", Comando );
+	printf(" ruta = %s\n", pos1 );
+	printf(" opacion1  = %s\n", pos2);
+	printf(" opcion2 = %s\n", pos3 );
+	printf(" opcion2 = %s\n", pos4 );
+
+	// validacion cantidad de parametros dependiendo del comando
+	if (strcmp(Comando,"MKD") == 0 ) {
+			
+		strcpy_s(destino,pos1);	
+		/*if (pos1 != NULL ) 
+			//unidad = strtok(pos1 , " /");
+				if ((unidad != NULL) && (strcmp(unidad,"") != 0 ))
+				strcpy_s(destino,pos1);	
+				else
+				{
+					printf ("ERROR, FORMATO INVALIDO DE RUTA ");
+					system("pause");
+					return;
+				}*/
+				
+			}else{
+				printf ("ERROR FALTAN PARAMETROS");
+				system("pause");
+				return;
+			}
+			/*if (pos2 != NULL){
+				strcpy(op1,pos2);
+			}else if (pos3 != NULL){
+				strcpy(op2,pos3);
+			}*/
+
+	if ( strcmp(Comando,"MKD") == 0 ){
+	printf("entre\n");
+
+	/*if (((strcmp (pos3,"h") == 0) || (strcmp (pos3,"r") == 0)) || ((strcmp (pos3,"H") == 0) || (strcmp (pos3,"R") == 0))){
+		if ((strcmp (pos3,"h") == 0) ||(strcmp (pos3,"H") == 0)){
+		op1 = 1;
+		}else
+		{op1 = 0; 
+		}
+		if ((strcmp (pos3,"R") == 0) ||(strcmp (pos3,"r") == 0)){
+		op2 = 1;
+		}
+		else {op2 = 0;
+		} 
+	}
+
+	if (((strcmp (pos2,"h") == 0) || (strcmp (pos2,"r") == 0)) || ((strcmp (pos2,"H") == 0) || (strcmp (pos2,"R") == 0))){
+		if ((strcmp (pos2,"h") == 0) ||(strcmp (pos2,"H") == 0)){
+		op1 = 1;
+		}else
+		{op1 = 0; 
+		}
+		if ((strcmp (pos2,"R") == 0) ||(strcmp (pos2,"r") == 0)){
+		op2 = 1;
+		}
+		else {op2 = 0;
+		} 
+	}*/
+	printf ( "opcion1  = %i \n" , op1);
+	printf ( "opcion2  = %i \n" , op2);
+	system("pause");
+	 
+
+	separarD(*p,l,&respuesta,destino,strAX);
+	printf (" NOMBRE DEL DIR = %s \n" , respuesta->Nom);
+	printf (" NOMBRE DEL nuevo DIR = %s \n" , strAX);
+	}	system("pause");
+	//else
+	/*if ( strcmp(token,"CHD") == 1 ) {
+		while (token != NULL){
+		strcpy(strAX, token);
+		printf("token: %s\n", token);
+		token = strtok(NULL, "/ ");
+		}
+	}
+	else
+	 if ( strcmp(token,"RMD") == 1 ){
+	
+	}
+	else
+	if ( strcmp(token,"CPD") == 1 ){
+	
+	}
+	else
+	if ( strcmp(token,"MVD") == 1 ){
+	
+	}
+	else
+	if ( strcmp(token,"SHD") == 1 ){
+	
+	}
+	else
+	if ( strcmp(token,"CSC") == 1 ){
+	
+	}
+	else
+	if ( strcmp(token,"CRU") == 1 ){
+	
+	}
+	else
+	if ( strcmp(token,"SRU") == 1 ){
+	
+	}
+	else
+	if ( strcmp(token,"LRU") == 1 ){
+	
+	}
+	else
+	if ( strcmp(token,"FRU") == 1 ){
+	
+	}
+	else
+	if ( strcmp(token,"ERU") == 1 ){
+	
+	}
+	else
+	if ( strcmp(token,"EXIT") == 1 ){
+	
+	};*/
+
+
+
+	
+}
+
 
 int main() {
     l_nodo* Root = NULL;
