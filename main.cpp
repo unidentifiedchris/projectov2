@@ -1250,6 +1250,9 @@ int main() {
         case 7:
             SHD(Root, op);
             break;
+	case 8:
+            tokenR(&Root,l);
+            break;
         }
     }
     system("pause");
