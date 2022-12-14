@@ -186,29 +186,111 @@ void eliminarDir(l_nodo** p, char txt[9]) {
 }
 
 
-void RMD(l_nodo** p, int x) {
+void RMD(l_nodo** p, char txt[9], int O) {
     l_nodo* t = (*p)->pFA, * pux, * del;
-    char txt[9];
-    while (x != 0) {
-        system("cls");
-        printf("-----------------------------------\n");
-        printf("Manejo Virtual de Archivos (MVA)\n");
-        printf("[3.Eliminar directorio (RMD)]\n");
-        printf("-----------------------------------\n\n");
-        imprimirDir(*p);
-        printf("1.\tNombre del directorio a borrar\n");
-        printf("0.\tSalir\n");
-        printf("Su opcion [0-2]: ");
-        scanf(" %i", &x);
-        t = (*p)->pFA;
+    int x;
+	if ( O == 1 ){ 
+	pux = *p;
+            if ((t == NULL) || (verificarExist(t, txt) == 0)) {
+                printf("Error, ese directorio no existe en el directorio actual\n\n");
+                system("pause");
+                return;
+            }
+            else {
+                if ((strcmp(pux->pFA->Nom, txt) == 0) && (pux->pFA->pUL == NULL)) {
+                    if (t->pUL == NULL) {
+                       
+                        if (t->pFA == NULL) {
+                            pux->pFA = NULL;
+                            delete t;
+							return;
+                        }
+                        else if ((t->pFA) || (t->r == 1)) {
+						
 
-        switch (x) {
-        case 1:
-            system("cls");
-            printf("-----------------------------------\n");
-            printf("Indique el nombre del directorio\n");
-            printf("-----------------------------------\n\n");
-            scanf(" %8s", txt, 9);
+                                    eliminarDir(&t, txt);
+                                    pux->pFA = NULL;                          
+                                    return;                                                         
+						
+                            }
+                        
+                       
+                    }
+                }
+                else {
+                    if ((strcmp(pux->pFA->Nom, txt) == 0) && (t->pUL)) {
+                        
+                        if (t->pFA == NULL) {
+                            pux->pFA = t->pUL;
+                            delete t;
+                        }
+                        else if ((t->pFA) || (t->r == 1)) {
+                           
+                            
+                                    pux->pFA = t->pUL;
+                                    eliminarDir(&t, txt);                                
+
+                                    return;
+									
+                                
+                            }
+                        
+                      
+                    }
+                }
+                while (t->pUL) {
+
+                    if (strcmp(t->pUL->Nom, txt) == 0) {
+                        if (t->pUL->pUL == NULL) {
+
+                            if (t->pUL->pFA == NULL) {
+                                del = t->pUL;
+                                t->pUL = NULL;
+                                delete del;
+                            }
+                            else if ((t->pUL->pFA)  || (t->pUL->r == 1)) {
+                             
+                                
+                                        del = t->pUL;
+                                        t->pUL = NULL;
+                                        eliminarDir(&del, txt);
+                                        x = -1;
+                                        return;
+                                   
+                                    
+                                
+                            }                                                     
+                        }
+                        else                                                
+                        if (t->pUL->pUL) {
+                            del = t->pUL;
+                            if (t->pUL->pFA == NULL) {
+                                t->pUL = del->pUL;
+                                delete del;
+                            }
+                            else if ((t->pUL->pFA)  || (t->pUL->r == 1)) {
+
+                                        t->pUL = del->pUL;
+                                        eliminarDir(&del, txt);
+                                       
+                                        return;                                                           
+                                
+                            }
+                        }
+                            
+                    }
+
+                        t = t->pUL;
+                        
+                }
+
+
+               
+            }
+	
+	} 
+	else ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	if (O == 0 ){
             pux = *p;
             if ((t == NULL) || (verificarExist(t, txt) == 0)) {
                 printf("Error, ese directorio no existe en el directorio actual\n\n");
@@ -218,80 +300,51 @@ void RMD(l_nodo** p, int x) {
             else {
                 if ((strcmp(pux->pFA->Nom, txt) == 0) && (pux->pFA->pUL == NULL)) {
                     if (t->pUL == NULL) {
-                        if ((strcmp(pux->pFA->Nom, txt) == 0) && (t->r == 1)) {
-                            printf("El directorio que quieres borrar esta como solo lectura");
-                            system("pause");
-                            return;
-                        }
+                       
                         if (t->pFA == NULL) {
                             pux->pFA = NULL;
                             delete t;
+							return;
                         }
-                        else if (t->pFA) {
-                            while (x != 0) {
-                                printf(" el directorio selecionado tiene hijos quieres eliminarlo con sus subdirectorios ((0)para no y (1)para si)  \n");
+                        else if ((t->pFA) || (t->r == 1)) {
+						
+                                printf(" el directorio selecionado tiene hijos o es solo lectura ,quieres eliminarlo con sus subdirectorios ((0)para no y (1)para si)  \n");
                                 scanf("%i", &x);
-                                switch (x)
-                                {
-                                case 1:
+									if ( x == 1 ){
                                     eliminarDir(&t, txt);
-                                    pux->pFA = NULL;
-                                    x = -1;
-
-                                    return;
-                                default:
-                                    break;
-                                }
+                                    pux->pFA = NULL;                          
+                                    return;                                                         
+						}
                             }
-                        }
-                        // eliminar
-                        printf("elimine el unico  nodo");
-                        system("pause");
-                        break;
+                        
+                       
                     }
                 }
                 else {
                     if ((strcmp(pux->pFA->Nom, txt) == 0) && (t->pUL)) {
-                        if ((strcmp(pux->pFA->Nom, txt) == 0) && (pux->pFA->r == 1)) {
-                            printf("El directorio que quieres borrar esta como solo lectura");
-                            system("pause");
-                            return;
-                        }
+                        
                         if (t->pFA == NULL) {
                             pux->pFA = t->pUL;
                             delete t;
                         }
-                        else if (t->pFA) {
-                            while (x != 0) {
-                                printf(" el directorio selecionado tiene hijos quieres eliminarlo con sus subdirectorios ((0)para no y (1)para si)  \n");
+                        else if ((t->pFA) || (t->r == 1)) {
+                           
+                                printf(" el directorio selecionado tiene hijos o es solo lectura, quieres eliminarlo con sus subdirectorios ((0)para no y (1)para si)  \n");
                                 scanf("%i", &x);
-                                switch (x)
-                                {
-                                case 1:
+									if ( x == 1 ){                             
                                     pux->pFA = t->pUL;
-                                    eliminarDir(&t, txt);
-                                    x = -1;
+                                    eliminarDir(&t, txt);                                
 
                                     return;
-                                default:
-                                    break;
-                                }
+									}
+                                
                             }
-                        }
-                        //eliminar 
-                        printf("elimine el primer  nodo");
-                        system("pause");
-                        break;
-
+                        
+                      
                     }
                 }
                 while (t->pUL) {
 
-                    if ((strcmp(t->pUL->Nom, txt) == 0) && (t->pUL->r == 1)) {
-                        printf("El directorio que quieres borrar esta como solo lectura");
-                        system("pause");
-                        return;
-                    }
                     if (strcmp(t->pUL->Nom, txt) == 0) {
                         if (t->pUL->pUL == NULL) {
 
@@ -300,21 +353,18 @@ void RMD(l_nodo** p, int x) {
                                 t->pUL = NULL;
                                 delete del;
                             }
-                            else if (t->pUL->pFA) {
-                                while (x != 0) {
-                                    printf(" el directorio selecionado tiene hijos quieres eliminarlo con sus subdirectorios ((0)para no y (1)para si)  \n");
+                            else if ((t->pUL->pFA)  || (t->pUL->r == 1)) {
+                             
+                                    printf(" el directorio selecionado tiene hijos o es solo lectura, quieres eliminarlo con sus subdirectorios ((0)para no y (1)para si)  \n");
                                     scanf("%i", &x);
-                                    switch (x)
-                                    {
-                                    case 1:
+                                   if (x = 1)  {                                    
                                         del = t->pUL;
                                         t->pUL = NULL;
                                         eliminarDir(&del, txt);
                                         x = -1;
                                         return;
-                                    default:
-                                        break;
-                                    }
+                                   
+                                    
                                 }
                             }                                                     
                         }
@@ -325,39 +375,31 @@ void RMD(l_nodo** p, int x) {
                                 t->pUL = del->pUL;
                                 delete del;
                             }
-                            else if (t->pUL->pFA) {
-                                while (x != 0) {
-                                    printf(" el directorio selecionado tiene hijos quieres eliminarlo con sus subdirectorios ((0)para no y (1)para si)  \n");
+                            else if ((t->pUL->pFA)  || (t->pUL->r == 1)) {
+                              
+                                    printf(" el directorio selecionado tiene hijos o es solo lectura, quieres eliminarlo con sus subdirectorios ((0)para no y (1)para si)  \n");
                                     scanf("%i", &x);
-                                    switch (x)
-                                    {
-                                    case 1:
+										if (x == 1){
                                         t->pUL = del->pUL;
                                         eliminarDir(&del, txt);
-                                        x = -1;
-                                        return;
-                                    default:
-                                        break;
-                                    }
+                                       
+                                        return;                                                           
                                 }
                             }
                         }
-                            system("pause");
-                            break;
+                            
                     }
 
                         t = t->pUL;
-                        printf("me movi");
-                        system("pause");
-
+                        
                 }
 
 
                
             } 
-            break;
-        }
-    }
+ 
+        
+		}
 }
 
 void verificarHijos(l_nodo** p, char txt[9]) {
@@ -926,34 +968,53 @@ void SHD(l_nodo* p, int x) {
     }
 }
 
-void separarD(l_nodo* p, l_nodo* l ,l_nodo **AX,char dest[100], char Nom[9]){
+void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100], char Nom[9]){
 	l_nodo *ANT = NULL;
 	*AX = l ;
 	char *ruta;
-	int contador = 0;
+	int contador = 0, fix = 0;
 	ruta = strtok (dest,"/");
 	
 	while (ruta != NULL){		
 		
 		if (AX != NULL) 
 			 if (strcmp (ruta, ".") == 0){
-					*AX = p;
-				}else if (strcmp (ruta, "..") == 0){	
-					*AX = p->pPA->pFA;
-					ANT = (*AX)->pPA;
+				 ANT = (*AX);
+				 *AX = p->pFA;
+					
+				}else if (strcmp (ruta, "..") == 0){
+
+					if (p->pPA != NULL){
+						*AX = p->pPA->pFA;	
+					}else{
+						*AX = p->pFA;	
+					}
+
+					if ((*AX)->pPA != NULL) {
+						ANT = (*AX)->pPA;
+					}else{
+						ANT = (*AX);
+					}
+					
 				}else 
 			if(strcmp (ruta, (*AX)->Nom) == 0){
-				ANT = *AX;
-				if ((*AX)->pFA != NULL) *AX = (*AX)->pFA;
+									ANT = *AX;
+				if ((*AX)->pFA != NULL){
+					*AX = (*AX)->pFA;
+				}
+
 				printf	("son iguales toke=%s \n" , ruta);
 			}else if ((*AX)->pUL) {
 				if ((strcmp (ruta, ".") != 0) || (strcmp (ruta, "..") != 0)){
 					while (AX){
 						if(strcmp (ruta, (*AX)->Nom) == 0){
 							printf	("son iguales , en hermanos \n");
-							if ((*AX)->pFA != NULL) 
+							if ((*AX)->pFA != NULL) {
+								ANT = *AX;
 								*AX = (*AX)->pFA;
-							ANT = *AX;
+							}else{
+								ANT = (*AX);
+							}
 							break;
 						}
 						else {
@@ -962,49 +1023,69 @@ void separarD(l_nodo* p, l_nodo* l ,l_nodo **AX,char dest[100], char Nom[9]){
 								//ANT = *AX;
 							}else{
 								printf	("no son iguales , no tengo mas hermanos \n");
+								contador++;
 								break;
 							}
 						}
 						}
 					}
-			}else
-			{
-
+			}else{
+				contador++;
 			}
  
 		strcpy(Nom, ruta);
 		ruta = strtok(NULL, "/ ");
 		printf("token: %s\n", ruta);
 		if(ruta == NULL){
-			if ((strcmp (Nom, (*AX)->Nom)==0)){
-				ANT = ANT->pPA;
-				*AX =  ANT;
+			if (contador < 2){
+				if ((strcmp (Nom, (*AX)->Nom)==0)){
+					ANT = ANT->pPA;
+					*AX =  ANT;
+				}else{
+					if ((strcmp (Nom, ANT->Nom)==0) && (*AX)->pPA != NULL) {
+						ANT = (*AX)->pPA->pPA;
+						//(*AX) = (*AX)->pPA;
+					}
+				}
+				}else{
+					ANT = NULL;
+				}
+
 			}
-		}
-/*		else{
-			if ((*AX)->pFA == NULL){
-				strcpy(Nom, ruta);
-				break;
-			}
-		}
-		*/
 	}
 	(*AX) = ANT;
 
-	printf	("saliendo  ANT NOM = %s \n" ,ANT->Nom);
+	// si contador es 0 significa que toda la ruta existe
+	if (contador == 0){
+		if ( ANT->pFA != NULL)
+			(*posicion) = ANT->pFA;
+		else
+			(*posicion) = ANT;
+		while (*posicion){
+			if(strcmp (Nom, (*posicion)->Nom) == 0){
+				break;
+			}
+			if ((*posicion)->pUL) 
+				(*posicion) = (*posicion)->pUL;
+			else
+				(*posicion) = NULL;
+		}
+	}
+
+	printf	("*************************************** \n");
+	printf	("Nro. directorios a crear= %d \n" ,contador);
+	printf	("Apuntador directorio para crear= %s \n" ,ANT->Nom);
+	printf	("Apuntador ultimo directorio= %s \n" ,(*posicion)->Nom);
 	printf("directorio: %s\n", Nom);
+	printf	("*************************************** \n");
 
 }
 	
-	
-
-
-
-
 void tokenR(l_nodo **p, l_nodo* l){
 	int op1, op2;
 	char str[100], *Comando,*pos1,*pos2,*pos3,*pos4,*fuente,*unidad,destino[100], strAX[9];
-l_nodo *respuesta = NULL;
+l_nodo *respuesta = NULL, *posicion = NULL;
+
 	fflush(stdin);
 
 	
@@ -1014,12 +1095,20 @@ l_nodo *respuesta = NULL;
 //strcpy( str,  " MKD  ./" );
 
 //strcpy( str,  "MKD C:/temp/datos " );
-//strcpy( str,  "MKD C:/temp1/datos /r /h" );
+//strcpy( str,  "MKD C:/temp1/datos /r /h" ); // arreglado
 //strcpy( str,  "MKD C:/temp2/datos /h" );
-//strcpy( str,  "MKD ./../temp/hijo /h" );
-//strcpy( str,  "MKD ./../temp3 /h" );   
+//strcpy( str,  "MKD ./../temp/hijo /h" );  
+//strcpy( str,  "MKD ./../temp1/hijo1/subhijo1 /h" );
+//strcpy( str,  "MKD ./../temp1/hijo1/subhijo1/subsubhijo1 /h" );
+//strcpy( str,  "MKD C:/temp1" );  // arreglado
+//strcpy( str,  "MKD ./../temp3 /h" );  // arreglado
 //strcpy( str,  "MKD ./../temp/datos /h" );
-//strcpy( str,  "MKD C:/temp1 /h" );
+//strcpy( str,  "MKD ./temp /h" ); //arreglado
+//strcpy( str,  "MKD C:/temp /h" ); //arreglado
+//strcpy( str,  "RMD C:/temp1 " );
+//strcpy( str,  " RMD ./.." );
+//strcpy( str,  "CHD C:/temp/hijo /h" );  
+ 
 
 
 	fflush(stdin);
@@ -1054,81 +1143,100 @@ l_nodo *respuesta = NULL;
 					return;
 				}*/
 				
-			}else{
+			}/*else{
 				printf ("ERROR FALTAN PARAMETROS");
 				system("pause");
 				return;
-			}
+			}*/
 			/*if (pos2 != NULL){
 				strcpy(op1,pos2);
 			}else if (pos3 != NULL){
 				strcpy(op2,pos3);
 			}*/
 
-	if ( strcmp(Comando,"MKD") == 0 ){
-	printf("entre\n");
-	
+if (( strcmp(Comando,"MKD") == 0 ) || ( strcmp(Comando,"mkd") == 0 )){
 
-	if (pos3 == NULL){
-		op2 = 0;
-		op1 = 0;}
-	else{
-		if ((strcmp (pos3,"/h") == 0) ||(strcmp (pos3,"/H") == 0)){
-		op1 = 1;
-		}else
-		{op1 = 0; 
-		}
-		if ((strcmp (pos3,"/R") == 0) ||(strcmp (pos3,"/r") == 0)){
-		op2 = 1;
-		}
-		else {op2 = 0;
-		} 
-	}
-	if (pos2 == NULL) {
-		op2 = 0;
-		op1 = 0;
-	}
-	else{if (op1 == 0) {
-		if ((strcmp (pos2,"/h") == 0) || (strcmp (pos2,"/H") == 0)){
-		op1 = 1;
-		}else
-		{op1 = 0; 
-		}
-	}
-		if (op2 == 0) {
-		if ((strcmp (pos2,"/R") == 0) ||(strcmp (pos2,"/r") == 0)){
-		op2 = 1;
-		}
-		else {op2 = 0;
-		} 
-	}
-}
-	printf ( "opcion1  = %i \n" , op1);
-	printf ( "opcion2  = %i \n" , op2);
-	system("pause");
+			if (pos3 == NULL){
+				op2 = 0;
+				op1 = 0;}
+			else{
+				if ((strcmp (pos3,"/h") == 0) ||(strcmp (pos3,"/H") == 0)){
+				op1 = 1;
+				}else
+				{op1 = 0; 
+				}
+				if ((strcmp (pos3,"/R") == 0) ||(strcmp (pos3,"/r") == 0)){
+				op2 = 1;
+				}
+				else {op2 = 0;
+				} 
+			}
+			if (pos2 == NULL) {
+				op2 = 0;
+				op1 = 0;
+			}
+			else{if (op1 == 0) {
+				if ((strcmp (pos2,"/h") == 0) || (strcmp (pos2,"/H") == 0)){
+				op1 = 1;
+				}else
+				{op1 = 0; 
+				}
+			}
+				if (op2 == 0) {
+				if ((strcmp (pos2,"/R") == 0) ||(strcmp (pos2,"/r") == 0)){
+				op2 = 1;
+				}
+				else {op2 = 0;
+				} 
+			}
+			}
+			printf ( "opcion1  = %i \n" , op1);
+			printf ( "opcion2  = %i \n" , op2);
+
 	 
 
-	separarD(*p,l,&respuesta,destino,strAX);
-	printf (" NOMBRE DEL DIR = %s \n" , respuesta->Nom);
-	printf (" NOMBRE DEL nuevo DIR = %s \n" , strAX);
+			separarD(*p,l,&respuesta,&posicion,destino,strAX);
+			printf (" NOMBRE DEL DIR = %s \n" , respuesta->Nom);
+			printf (" NOMBRE DEL nuevo DIR = %s \n" , strAX);
 
-	MKD (&respuesta,strAX , op1, op2);
+			MKD (&respuesta,strAX , op1, op2);
+			system("pause");
+	}	
 
-	}	system("pause");
-
-	//else
-	/*if ( strcmp(token,"CHD") == 1 ) {
-		while (token != NULL){
-		strcpy(strAX, token);
-		printf("token: %s\n", token);
-		token = strtok(NULL, "/ ");
+	else
+if (( strcmp(Comando,"CHD") == 0 ) || ( strcmp(Comando,"chd") == 0 )){
+		strcpy_s(destino,pos1);	
+		separarD(*p,l,&respuesta,&posicion,destino,strAX);
+		if (posicion == NULL){
+		printf("la ruta no es valida\n");
+			system("pause");
+			return;
+		}
+		printf("posicion = %s \n" , posicion  );
+			system("pause");
+		*p = posicion;
+	}
+	else
+if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
+		if (pos2 == NULL) {
+		op1 = 0;
+	}
+	else if (op1 == 0) {
+		if ((strcmp (pos2,"/o") == 0) || (strcmp (pos2,"/O") == 0)){
+		op1 = 1;
+		}else
+		{op1 = 0; 
 		}
 	}
-	else
-	 if ( strcmp(token,"RMD") == 1 ){
+	strcpy_s(destino,pos1);	
+	printf ("destino = %s \n",destino);
+	system("pause");
+	separarD(*p,l,&respuesta,&posicion,destino,strAX);
+	*p = l;
+	RMD(&respuesta,strAX,op1);
 	
-	}
-	else
+}
+	/*else
 	if ( strcmp(token,"CPD") == 1 ){
 	
 	}
