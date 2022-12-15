@@ -1088,20 +1088,19 @@ if (( strcmp(Comando,"MKD") == 0 ) || ( strcmp(Comando,"mkd") == 0 )){
 				op2 = 0;
 				op1 = 0;
 			}
-			else{if (op1 == 0) {
+			else{
 				if ((strcmp (pos2,"/h") == 0) || (strcmp (pos2,"/H") == 0)){
 				op1 = 1;
 				}else
 				{op1 = 0; 
 				}
-			}
-				if (op2 == 0) {
+
 				if ((strcmp (pos2,"/R") == 0) ||(strcmp (pos2,"/r") == 0)){
 				op2 = 1;
 				}
 				else {op2 = 0;
 				} 
-			}
+			
 			}
 			printf ( "opcion1  = %i \n" , op1);
 			printf ( "opcion2  = %i \n" , op2);
@@ -1146,7 +1145,7 @@ if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
 	if (pos2 == NULL) {
 		op1 = 0;
 	}
-	else if (op1 == 0) {
+	else  {
 		if ((strcmp (pos2,"/o") == 0) || (strcmp (pos2,"/O") == 0)){
 		op1 = 1;
 		}else
