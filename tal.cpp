@@ -538,23 +538,30 @@ void MVD(l_nodo** p,  l_nodo **j, int O) {
 		}		
 	}
 }   
-/*void copiar(l_nodo**p, l_nodo **t) {
- l_nodo *k;
-	 if (*p){
-	  k = new l_nodo;
-	 copiar(&(*p)->pUL);
-	 copiar(&(*p)->pFA);
-	 strcpy_s(k->Nom, (*p)->Nom);
-            k->pUL = (*p)->pUL;
-            k->pFA = (*p)->pFA;
-            k->pPA = (*p)->pPA;
-            k->h = (*p)->h;
-            k->r = (*p)->r;
-			strcpy(k->fcm,(*p)->fcm );
-            k->Tip = (*p)->Tip;
+l_nodo* copiar(l_nodo*p, l_nodo *t, bool comp) {
+ l_nodo *AX = p, *k = new l_nodo;
+	
+	strcpy(k->Nom, AX->Nom);
+	k->h = AX->h;
+    k->r = AX->r;
+    strcpy(k->fcm,AX->fcm);
+    k->Tip = AX->Tip;
 
-	 }
-}*/
+	if(AX->pFA){
+		k->pFA = copiar(AX->pFA,k, false);
+	}else {
+		k->pFA = NULL;
+	}
+	if ((AX->pUL)&&(comp == false)){
+		k->pUL = copiar(AX->pUL,t,false);
+	}else {
+		k->pUL = NULL;
+	}
+	k->pPA = t;
+	return(k);
+}
+	
+	
 				 
 
 
