@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
 /* Integrantes del grupo: Juan Hidalgo, Luis Daniel, Matias Silveira */
 
@@ -23,23 +24,21 @@ int verificarExist(l_nodo* p, char x[]) {
             return 1;
         }
         t = t->pUL;
-    }
-    ;
+    };
     return 0;
 }
 
 void imprimirDir(l_nodo* p) {
     l_nodo* t = p;
     if (t == NULL)
-        printf("Directorio actual -> [C:/");
+        printf("%c/",t->Nom);
     else {
-        printf("Directorio actual -> [C:");
         while (t != NULL) {
-            printf("/%8s", t->Nom, 9);
+            printf("%5s", t->Nom, 9);
             t = t->pUL;
         }
+		printf("/");
     }
-    printf("\n\n");
 }
 
 void fecha(char fcm[]) {
@@ -53,7 +52,7 @@ void MKD(l_nodo** P, char Nombre[9], int h, int r) {
     l_nodo* t, * aux = *P, *bux;
          
             t = new l_nodo;
-            strcpy_s(t->Nom, Nombre);
+            strcpy(t->Nom, Nombre);
             t->pUL = NULL;
             t->pFA = NULL;
             t->pPA = aux;
@@ -184,7 +183,6 @@ void eliminarDir(l_nodo** p, char txt[9]) {
         }
     }
 }
-
 
 void RMD(l_nodo** p, char txt[9], int O) {
     l_nodo* t = (*p)->pFA, * pux, * del;
@@ -416,277 +414,6 @@ void verificarHijos(l_nodo** p, char txt[9]) {
                           //Pero en el caso de moverla, la movera al primero que encuentre
 }
 
-void buscarToken(l_nodo** p, char cad[], int cont) {
-    int i = cont;
-    while (cad[i] != '\0') {
-        if ((*p)->Nom == cad[i]) {
-            break;
-        }
-        else {
-            while ((*p)->Nom != cad[i]) {
-                *p = (*p)->pUL;
-            }
-            if (cad[i + 2] = '/0')
-                break;
-            else if (((*p)->pFA != NULL) && (cad[i + 2] != '/0')) {
-                cont += 2;
-                buscarToken(&((*p)->pFA), cad, cont);
-            }
-            else
-                break;
-        }
-    }
-}
-
-/void MVD(l_nodo* p, int x) {
-    l_nodo* t = *p, * u = *p, * aux = new l_nodo;
-    char txt[100];
-    int i = 0, cont = 0;
-    printf("-----------------------------------\n");
-    printf("Manejo Virtual de Archivos (MVA)\n");
-    printf("[4.Mover directorio (MVD)]\n");
-    printf("-----------------------------------\n\n");
-    imprimirDir(*p);
-    printf("1.\tNombre del directorio\n");
-    printf("0.\tSalir\n");
-    printf("Su opcion [0-1]: ");
-    scanf("%i", &x);
-
-    switch (x) {
-    case 1:
-        if (t->pPA == NULL) {
-            system("cls");
-            printf("------------------------------------------------------------\n");
-            printf("Error, se encuentra actualmente en la unidad logica\n");
-            printf("La unidad logica no se puede mover a un directorio\n");
-            printf("------------------------------------------------------------\n\n");
-            system("pause");
-        }
-        else if (u->r == 1) {
-            printf("------------------------------------------------------------\n");
-            printf("Error, se encuentra actualmente en un archivo de\n");
-            printf("solo lectura, este archivo no se puede mover\n");
-            printf("------------------------------------------------------------\n\n");
-        }
-        else {
-            system("cls");
-            printf("------------------------------------------------------------\n");
-            printf("El directorio actual se movera a otra locacion en el sistema\n");
-            printf("Ingrese la direccion del directorio al que movera el actual:\n");
-            printf("------------------------------------------------------------\n\n");
-            printf("C:/");
-            fflush(stdin);
-            gets_s(txt);
-            strcpy_s(aux->Nom, u->Nom);
-            aux->pUL = NULL;
-            aux->pFA = u->pFA;
-            aux->h = u->h;
-            aux->r = u->r;
-            aux->Tip = u->Tip;
-            //fecha(aux->fcm);
-
-            while (t->pPA->pPA != NULL) {
-                t = t->pPA;
-            }
-
-            buscarToken(&t, txt, cont);
-            aux->pPA = t;
-
-            if (verificarExist(t->pFA, u->Nom) == 1) {
-                printf("------------------------------------------------------------\n");
-                printf("El directorio a donde se movera el actual ya contiene un\n");
-                printf("directorio de nombre %c\n\n", u->Nom);
-                printf("Desea omitirlo (1) o sobreescribirlo (2)?\n");
-                printf("------------------------------------------------------------\n\n");
-                scanf("%i", &x);
-                if (x < 1 || x>2) {
-                    do {
-                        system("cls");
-                        printf("Error, esa no es una respuesta valida\n");
-                        printf("Ingrese otra respuesta [1-2]\n\n");
-                        scanf("%i", &x);
-                    } while (x < 1 || x>2);
-                }
-                if (x == 1) {
-                    t = t->pFA;
-                    while (t->pUL != NULL) {
-                        t = t->pUL;
-                    }
-                    strcpy_s(aux->Nom, u->Nom);           
-                    aux->pUL = NULL;
-                    aux->pFA = u->pFA;
-                    aux->pPA = t->pPA;
-                    aux->h = u->h;
-                    aux->r = u->r;
-                    aux->Tip = u->Tip;
-                    //fecha(aux->fcm);
-                    t->pUL = aux;
-                    if ((*p)->pUL == NULL)
-                        *p = (*p)->pPA;
-                    else
-                        *p = (*p)->pUL;
-                    delete u;
-                    printf("\n\n");
-                    system("pause");
-                }
-                else if (x == 2) {
-                    t = t->pFA;
-                    while (t->pUL != NULL) {
-                        t = t->pUL;
-                        if (t->Nom == u->Nom) {
-                            t = u;
-                            if ((*p)->pUL == NULL)
-                                *p = (*p)->pPA;
-                            else
-                                *p = (*p)->pUL;
-                            *p = (*p)->pUL;
-                            delete u;
-                            printf("\n\n");
-                            system("pause");
-                        }
-                    }
-                }
-            }
-            else if (t->pFA == NULL) {
-                t->pFA = aux;
-                if ((*p)->pUL == NULL)
-                    *p = (*p)->pPA;
-                else
-                    *p = (*p)->pUL;
-                delete u;
-                printf("\n\n");
-                system("pause");
-            }
-            else if (t->pFA != NULL) {
-                t = t->pFA;
-                while (t->pUL != NULL) {
-                    t = t->pUL;
-                }
-                t->pUL = aux;
-                if ((*p)->pUL == NULL)
-                    *p = (*p)->pPA;
-                else
-                    *p = (*p)->pUL;
-                delete u;
-                printf("\n\n");
-                system("pause");
-            }
-        }
-        break;
-    case 0:
-        break;                      //Problema actual: si mueve el directorio pero a la hora de ejecutar el imprimir todo del 7 explota
-    }
-}
-
-
-void CPD(l_nodo** p, int x) {
-    l_nodo* t = *p, * u = *p, * aux = new l_nodo;
-    char txt[100];
-    int i = 0, cont = 0;
-    printf("-----------------------------------\n");
-    printf("Manejo Virtual de Archivos (MVA)\n");
-    printf("[5.Copiar directorio (CPD)]\n");
-    printf("-----------------------------------\n\n");
-    imprimirDir(*p);
-    printf("1.\tNombre del directorio\n");
-    printf("0.\tSalir\n");
-    printf("Su opcion [0-1]: ");
-    scanf("%i", &x);
-
-    switch (x) {
-    case 1:
-        if (t->pPA == NULL) {
-            system("cls");
-            printf("------------------------------------------------------------\n");
-            printf("Error, se encuentra actualmente en la unidad logica\n");
-            printf("La unidad logica no se puede copiar a un directorio\n");
-            printf("------------------------------------------------------------\n\n");
-            system("pause");
-        }
-        else {
-            system("cls");
-            printf("------------------------------------------------------------\n");
-            printf("El directorio actual se copiara a otra locacion en el sistema\n");
-            printf("Ingrese la direccion del directorio al que movera el actual:\n");
-            printf("------------------------------------------------------------\n\n");
-            printf("C:/");
-            fflush(stdin);
-            gets_s(txt);
-            strcpy_s(aux->Nom, u->Nom);     
-            aux->pUL = NULL;
-            aux->pFA = u->pFA;
-            aux->h = u->h;
-            aux->r = u->r;
-            aux->Tip = u->Tip;
-            //fecha(aux->fcm);
-
-            while (t->pPA->pPA != NULL) {
-                t = t->pPA;
-            }
-
-            buscarToken(&t, txt, cont);
-            aux->pPA = t;
-
-            if (verificarExist(t->pFA, u->Nom) == 1) {
-                printf("------------------------------------------------------------\n");
-                printf("El directorio a donde se copiara el actual ya contiene un\n");
-                printf("directorio de nombre %c\n\n", u->Nom);
-                printf("Desea omitirlo (1) o sobreescribirlo (2)?\n");
-                printf("------------------------------------------------------------\n\n");
-                scanf("%i", &x);
-                if (x < 1 || x>2) {
-                    do {
-                        system("cls");
-                        printf("Error, esa no es una respuesta valida\n");
-                        printf("Ingrese otra respuesta [1-2]\n\n");
-                        scanf("%i", &x);
-                    } while (x < 1 || x>2);
-                }
-                if (x == 1) {
-                    t = t->pFA;
-                    while (t->pUL != NULL) {
-                        t = t->pUL;
-                    }
-                    strcpy_s(aux->Nom, u->Nom);
-                    aux->pUL = NULL;
-                    aux->pFA = u->pFA;
-                    aux->pPA = t->pPA;
-                    aux->h = u->h;
-                    aux->r = u->r;
-                    aux->Tip = u->Tip;
-                    //fecha(aux->fcm);
-                    t->pUL = aux;
-                }
-                else if (x == 2) {
-                    t = t->pFA;
-                    while (t->pUL != NULL) {
-                        t = t->pUL;
-                        if (t->Nom == u->Nom) {
-                            t = u;
-                        }
-                    }
-                }
-            }
-            else if (t->pFA == NULL) {
-                t->pFA = aux;
-            }
-            else if (t->pFA != NULL) {
-                t = t->pFA;
-                while (t->pUL != NULL) {
-                    t = t->pUL;
-                }
-                t->pUL = aux;
-            }
-            printf("Se ha copiado el directorio de forma exitosa\n");
-            system("pause");
-        }
-        break;
-    case 0:
-        break;
-    }
-}*/
-
-
 void bisiesto(int* y, int* m, int* d) {
     if (*y % 4 == 0 && *y % 100 != 0 || *y % 400 == 0) {
         printf("\nIngrese el valor del mes: ");
@@ -811,7 +538,7 @@ void MDD(l_nodo** p, int x) {
 
                
             }
-            strcpy_s(t->Nom, txt);
+            strcpy(t->Nom, txt);
             printf("Se ha modificado el nombre del directorio a: %8s", t->Nom,9);
             printf("-----------------------------------------------------\n\n");
             break;
@@ -1081,7 +808,120 @@ void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100
 
 }
 	
-void tokenR(l_nodo **p, l_nodo* l){
+void CRU(l_nodo **p, char und) {
+	l_nodo *t = *p;
+	while (t && t->pPA == NULL)
+		t=t->pPA;
+	und = toupper(und);
+
+	l_nodo *aux = new l_nodo;
+    strcpy(t->Nom,&und);
+	aux->pPA = NULL;
+	aux->pUL = t;
+	aux->pFA = NULL;
+	aux->Tip = 1;
+    // Leer token como char en mayuscula
+    // 
+}
+
+void FRU(l_nodo **p, char txt[]) { 
+    char op;
+    l_nodo* t = *p;
+    while (t != NULL) {
+        if (strcmp(t->Nom,txt) == 0) {
+            printf("Estas seguro que quieres formatear la unidad logica %s? (S/N)",(*p)->Nom);
+            scanf("%c",&op);
+            if (op == 'S' || op == 's') {
+                eliminarDirHermanos(&(t->pFA));
+                printf("Unidad logica %s formateada.",(*p)->Nom);
+            }
+            else if (op == 'N' || op == 'n')
+                printf("Operacion cancelada.\n");
+        } else {
+            t=t->pUL;
+        }
+    }
+}
+
+void ERU(l_nodo **p, char txt[]) {
+    char op;
+    printf("Estas seguro que quieres formatear la unidad logica %s? (S/N)",(*p)->Nom);
+    scanf("%c",&op);
+    if (op == 'S' || op == 's') {
+        eliminarDir(p,(*p)->Nom);
+    }
+    else if (op == 'N' || op == 'n')
+        printf("Operacion cancelada.\n");
+}
+
+void escribir(l_nodo *t,FILE *archivo) {
+    fprintf(archivo,"%s %c %s",t->Nom,t->Tip,t->fcm);
+    if (t->r) fprintf(archivo," 1"); else fprintf(archivo," 0");
+    if (t->h) fprintf(archivo," 1"); else fprintf(archivo," 0");
+}
+
+void viaje(l_nodo *p, l_nodo **flag, FILE **archivo) {
+	l_nodo* t = p, *aux;
+    if(t != NULL) {
+        printf("\n\t"); escribir(t,*archivo);
+        if (t->pFA != NULL) {
+			viaje(p->pFA,flag,archivo);
+        }
+		if (t->pUL != NULL) {
+			if (t->pUL != *flag) {
+				*flag = t;
+				viaje(p->pUL,flag,archivo);
+			}
+		}			
+    }
+}
+
+void SRU(l_nodo *p,char *nombre) {
+    FILE *archivo;
+    char ext[] = ".txt";
+
+    strcpy(nombre,p->Nom);
+    strcat(nombre,ext);
+    archivo = fopen(nombre,"w");
+
+    l_nodo *t = p->pFA;
+    while(t != NULL) {
+		viaje(t,&t,&archivo);
+		t=t->pUL;
+    }
+    fclose(archivo);
+} 
+
+void LRU(l_nodo **p, char *archnom, char nombre) {
+    FILE *main;
+    char a[100];
+    main = fopen(archnom,"r");
+    // Crear unidad logica
+    CRU(p,nombre);
+    while(!(feof(main))) {
+        fscanf(main,"%s",a);
+        l_nodo *t = new l_nodo;
+        if (strtok(a," ") == "pFA")
+            (*p)->pFA = t;
+        else if (strtok(a," ") == " ") {
+            //Crear hijo, recursivamente
+        }
+        fflush(stdin);
+        fscanf(main,"%s %c %s %i %i",t->Nom,t->Tip,t->fcm,t->r,t->h);
+        
+    }
+
+}
+
+void EXIT(l_nodo *p) {
+	l_nodo *t = p;
+	if (t->pUL && t) {
+		EXIT(t->pUL);
+		SRU(t,t->Nom);
+	}
+}
+
+void tokenR(l_nodo **p, l_nodo* l,int op, FILE **main) {
 	int op1, op2;
 	char str[100], *Comando,*pos1,*pos2,*pos3,*pos4,*fuente,*unidad,destino[100], strAX[9];
 l_nodo *respuesta = NULL, *posicion = NULL;
@@ -1090,27 +930,6 @@ l_nodo *respuesta = NULL, *posicion = NULL;
 
 	
 	fgets(str,100,stdin);
-	//strcpy( str,  "MDD C:/temp/datos /n:info" );
-
-//strcpy( str,  " MKD  ./" );
-
-//strcpy( str,  "MKD C:/temp/datos " );
-//strcpy( str,  "MKD C:/temp1/datos /r /h" ); // arreglado
-//strcpy( str,  "MKD C:/temp2/datos /h" );
-//strcpy( str,  "MKD ./../temp/hijo /h" );  
-//strcpy( str,  "MKD ./../temp1/hijo1/subhijo1 /h" );
-//strcpy( str,  "MKD ./../temp1/hijo1/subhijo1/subsubhijo1 /h" );
-//strcpy( str,  "MKD C:/temp1" );  // arreglado
-//strcpy( str,  "MKD ./../temp3 /h" );  // arreglado
-//strcpy( str,  "MKD ./../temp/datos /h" );
-//strcpy( str,  "MKD ./temp /h" ); //arreglado
-//strcpy( str,  "MKD C:/temp /h" ); //arreglado
-//strcpy( str,  "RMD C:/temp1 " );
-//strcpy( str,  " RMD ./.." );
-//strcpy( str,  "CHD C:/temp/hijo /h" );  
- 
-
-
 	fflush(stdin);
 	printf("%s\n", str);
 
@@ -1131,28 +950,7 @@ l_nodo *respuesta = NULL, *posicion = NULL;
 	// validacion cantidad de parametros dependiendo del comando
 	if (strcmp(Comando,"MKD") == 0 ) {
 			
-		strcpy_s(destino,pos1);	
-		/*if (pos1 != NULL ) 
-			//unidad = strtok(pos1 , " /");
-				if ((unidad != NULL) && (strcmp(unidad,"") != 0 ))
-				strcpy_s(destino,pos1);	
-				else
-				{
-					printf ("ERROR, FORMATO INVALIDO DE RUTA ");
-					system("pause");
-					return;
-				}*/
-				
-			}/*else{
-				printf ("ERROR FALTAN PARAMETROS");
-				system("pause");
-				return;
-			}*/
-			/*if (pos2 != NULL){
-				strcpy(op1,pos2);
-			}else if (pos3 != NULL){
-				strcpy(op2,pos3);
-			}*/
+		strcpy(destino,pos1);	
 
 if (( strcmp(Comando,"MKD") == 0 ) || ( strcmp(Comando,"mkd") == 0 )){
 
@@ -1202,91 +1000,53 @@ if (( strcmp(Comando,"MKD") == 0 ) || ( strcmp(Comando,"mkd") == 0 )){
 			MKD (&respuesta,strAX , op1, op2);
 			system("pause");
 	}	
-
-	else
-if (( strcmp(Comando,"CHD") == 0 ) || ( strcmp(Comando,"chd") == 0 )){
-		strcpy_s(destino,pos1);	
+	else if (( strcmp(Comando,"CHD") == 0 ) || ( strcmp(Comando,"chd") == 0 )){
+		strcpy(destino,pos1);	
 		separarD(*p,l,&respuesta,&posicion,destino,strAX);
 		if (posicion == NULL){
-		printf("la ruta no es valida\n");
+		    printf("la ruta no es valida\n");
 			system("pause");
 			return;
 		}
 		printf("posicion = %s \n" , posicion  );
-			system("pause");
+		system("pause");
 		*p = posicion;
 	}
-	else
-if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
-		if (pos2 == NULL) {
-		op1 = 0;
-	}
-	else if (op1 == 0) {
-		if ((strcmp (pos2,"/o") == 0) || (strcmp (pos2,"/O") == 0)){
-		op1 = 1;
-		}else
-		{op1 = 0; 
-		}
-	}
-	strcpy_s(destino,pos1);	
-	printf ("destino = %s \n",destino);
-	system("pause");
-	separarD(*p,l,&respuesta,&posicion,destino,strAX);
-	*p = l;
-	RMD(&respuesta,strAX,op1);
-	
+	else if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
+        if (pos2 == NULL) {
+            op1 = 0;
+        } else if (op1 == 0) {
+            if ((strcmp (pos2,"/o") == 0) || (strcmp (pos2,"/O") == 0)){
+            op1 = 1;
+            } else {
+                op1 = 0; 
+            }
+        }
+            strcpy(destino,pos1);	
+            printf ("destino = %s \n",destino);
+            system("pause");
+            separarD(*p,l,&respuesta,&posicion,destino,strAX);
+            *p = l;
+            RMD(&respuesta,strAX,op1);
+        
+    }
+    else if (( strcmp(Comando,"SRU") == 0 ) || ( strcmp(Comando,"sru") == 0 )){
+        strcpy(destino,pos1);	
+        SRU(*p,destino);
+    }
+    else if (( strcmp(Comando,"EXIT") == 0 ) || ( strcmp(Comando,"exit") == 0 )){
+        EXIT(*p);
+        op = 0;
+    }
+    
 }
-	/*else
-	if ( strcmp(token,"CPD") == 1 ){
-	
-	}
-	else
-	if ( strcmp(token,"MVD") == 1 ){
-	
-	}
-	else
-	if ( strcmp(token,"SHD") == 1 ){
-	
-	}
-	else
-	if ( strcmp(token,"CSC") == 1 ){
-	
-	}
-	else
-	if ( strcmp(token,"CRU") == 1 ){
-	
-	}
-	else
-	if ( strcmp(token,"SRU") == 1 ){
-	
-	}
-	else
-	if ( strcmp(token,"LRU") == 1 ){
-	
-	}
-	else
-	if ( strcmp(token,"FRU") == 1 ){
-	
-	}
-	else
-	if ( strcmp(token,"ERU") == 1 ){
-	
-	}
-	else
-	if ( strcmp(token,"EXIT") == 1 ){
-	
-	};*/
-
-
-
-	
 }
 
 
 int main() {
     l_nodo* Root = NULL;
     l_nodo* l = new l_nodo;
-    strcpy_s(l->Nom, "C:");
+    strcpy(l->Nom, "C:");
     l->pFA = NULL;
     l->pPA = NULL;
     l->pUL = NULL;
@@ -1295,63 +1055,16 @@ int main() {
     l->Tip = 'U';
     Root = l;
 
+    FILE *main;
+
     time_t now = time(0);
     struct tm* actTime = localtime(&now);
 
     int op = -1;
-
-    while (op != 0) {
-        system("cls");
-        printf("-------------------------------------\n");
-        printf("Manejo Virtual de Archivos (MVA)\n");
-        printf("-------------------------------------\n\n\n");
-        imprimirDir(Root);
-
-       printf("%d/%d/%d\n\n", actTime->tm_mday, actTime->tm_mon + 1, actTime->tm_year + 1900);
-
-        printf("Manejo de directorios\n\n");
-        printf("1.\tCrear directorio (MKD)\n");
-        printf("2.\tCambiar de directorio (CHD)\n");
-        printf("3.\tBorrar directorio (RMD)\n");
-        printf("4.\tMover directorio (CPD)\n");
-        printf("5.\tCopiar directorio (MVD)\n");
-        printf("6.\tModificar directorio (MDD)\n");
-        printf("7.\tMostrar directorio (SHD)\n");
-        printf("0.\tSalir y guardar datos\n");
-        printf("-------------------------------------\n\n");
-        printf("Su opcion [0-7]: ");
-
-        scanf(" %i", &op);
-        system("cls");
-        switch (op) {
-        case 1:
-            MKD(&Root, op);
-            break;
-        case 2:
-            CHD(&Root, op);
-            break;
-        case 3:
-            RMD(&Root, op);
-            break;
-        case 4:
-            printf("esta funcion solo acepta caracteres y esta desabilitada \n");
-            system("pause");
-            break;
-        case 5:
-            printf("esta funcion solo acepta caracteres y esta desabilitada \n");
-            system("pause");
-          //  CPD(&Root, op);
-            break;
-        case 6:
-            MDD(&Root, op);
-            break;
-        case 7:
-            SHD(Root, op);
-            break;
-	case 8:
-            tokenR(&Root,l);
-            break;
-        }
+    while(op != 0) {
+		imprimirDir(Root);
+        printf("> ");
+        tokenR(&Root,l,op,&main);
     }
     system("pause");
     return 0;
