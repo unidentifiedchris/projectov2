@@ -538,20 +538,20 @@ void MVD(l_nodo** p,  l_nodo **j, int O) {
 		}		
 	}
 }   
-void copiar(l_nodo**p){
- l_nodo *t;
+void copiar(l_nodo**p, l_nodo **t) {
+ l_nodo *k;
 	 if (*p){
-	  t = new l_nodo;
+	  k = new l_nodo;
 	 copiar(&(*p)->pUL);
 	 copiar(&(*p)->pFA);
-	 strcpy_s(t->Nom, (*p)->Nom);
-            t->pUL = (*p)->pUL;
-            t->pFA = (*p)->pFA;
-            t->pPA = (*p)->pPA;
-            t->h = (*p)->h;
-            t->r = (*p)->r;
-           // t->fcm = fecha(t->fcm);
-            t->Tip = (*p)->Tip;
+	 strcpy_s(k->Nom, (*p)->Nom);
+            k->pUL = (*p)->pUL;
+            k->pFA = (*p)->pFA;
+            k->pPA = (*p)->pPA;
+            k->h = (*p)->h;
+            k->r = (*p)->r;
+			strcpy(k->fcm,(*p)->fcm );
+            k->Tip = (*p)->Tip;
 
 	 }
 }
@@ -576,7 +576,7 @@ void CPD(l_nodo** p,  l_nodo **j, int O) {
 			system ("pause");
 			return;
 		}else if (verificarSoloR(*p) == 0 ){
-			 copiar(p);
+			 copiar(p,&t);
 		}
    }if (O == 1){}
    else if (O == 2){}
@@ -872,6 +872,8 @@ void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100
 	int contador = 0, fix = 0;
 	ruta = strtok (dest,"/");
 	
+
+
 	while (ruta != NULL){		
 		
 		if (AX != NULL) 
@@ -1027,6 +1029,7 @@ l_nodo *respuesta = NULL, *posicion = NULL, *inicio = NULL, *pregunta  = NULL;
 	pos3 = strtok(NULL, " \n");
 	pos4 = strtok(NULL, " \n");
 
+	
 
 
 	printf(" comando = %s\n", Comando );
