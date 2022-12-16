@@ -492,23 +492,36 @@ void morfosis(char *token, l_nodo **p){
 
 	if((strcmp(parametro,"n")==0) || (strcmp(parametro,"N")==0)){
 		if((strlen(valor)<0)||(strlen(valor)>9)){
+			if((strlen(valor)<0)||(strlen(valor)>9)){
 			printf("Error, el nombre ingresado excede el limite de longitud. Intente nuevamente\n\n");
 			system("pause");
-		}
+		}else if(verificarExist((*p),valor)==1){
+			printf("Error, ya existe un directorio con ese nombre. Intente de nuevo.\n\n");
+			system("pause");
+		}else{
 		strcpy((*p)->Nom,valor);
-		printf("ahora el nombre del directorio es: %s\n\n",(*p)->Nom);
+		printf("\n\nAhora el nombre del directorio es: %s\n\n",(*p)->Nom);
 		system("pause");
+		}
 	}
 	else if((strcmp(parametro,"r")==0) || (strcmp(parametro,"R")==0)){
-		if(strcmp(valor,"1"))
+		if(strcmp(valor,"1")==0)
 			(*p)->r=1;
-		else
+		else if(strcmp(valor,"0")==0)
 			(*p)->r=0;
+		else{
+			printf("Error, el valor ingresado es invalido.\n\n");
+			system("pause");
+		}
 	}else if((strcmp(parametro,"h")==0) || (strcmp(parametro,"H")==0)){
-		if(strcmp(valor,"1"))
+		if(strcmp(valor,"1")==0)
 			(*p)->h=1;
-		else
-			(*p)->h=0;
+		else if(strcmp(valor,"0")==0)
+			(*p)->r=0;
+		else{
+			printf("Error, el valor ingresado es invalido.\n\n");
+			system("pause");
+		}
 	} 
 	else{
 		printf("Error, el parametro introducido no es valido. Intentelo de nuevo");
