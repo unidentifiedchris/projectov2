@@ -225,7 +225,7 @@ void mostrarDir(l_nodo* p, int cont) {
         for (int i = 0; i < cont; i++)
             printf("  ");
         printf("|%c", p->Nom);
-        if (Tip == 1) printf("     <D>      %s       r(%i)\n", p->Nom, p->fcm, p->r);
+        if (p->Tip == 1) printf("     <D>      %s       r(%i)\n", p->Nom, p->fcm, p->r);
         else printf("      %s       r(%i)\n", p->fcm, p->r);
         if (p->pFA != NULL) {
             contact = cont;
@@ -243,11 +243,11 @@ void mostrarArchivos(l_nodo* p, int cont, int op) {
         while (p != NULL) {
             for (int i = 0; i < cont; i++)
                 printf("  ");
-            if (p->h == 0)
+            if (p->h == 0) {
                 printf("|%c", p->Nom);
-                if (Tip == 1) printf("     <D>      %s       r(%i)   h-\n", p->fcm, p->r,p->h);
+                if (p->Tip == 1) printf("     <D>      %s       r(%i)   h-\n", p->fcm, p->r,p->h);
                 else printf("      %s       r(%i)   h-\n", p->fcm, p->r,p->h);
-            else
+            } else
                 printf("");
             p = p->pUL;
         }
@@ -256,14 +256,15 @@ void mostrarArchivos(l_nodo* p, int cont, int op) {
         while (p != NULL) {
             for (int i = 0; i < cont; i++)
                 printf("  ");
-            if (p->h == 1)
+            if (p->h == 1) {
                 printf("|%c", p->Nom);
-                if (Tip == 1) printf("     <D>      %s       r(%i)   h+\n", p->fcm, p->r,p->h);
+                if (p->Tip == 1) printf("     <D>      %s       r(%i)   h+\n", p->fcm, p->r,p->h);
                 else printf("      %s       r(%i)   h+\n", p->fcm, p->r,p->h);
-            else
+            } else {
                 printf("|%c", p->Nom);
-                if (Tip == 1) printf("     <D>      %s       r(%i)   h+\n", p->fcm, p->r,p->h);
+                if (p->Tip == 1) printf("     <D>      %s       r(%i)   h+\n", p->fcm, p->r,p->h);
                 else printf("      %s       r(%i)   h+\n", p->fcm, p->r,p->h);
+            }
             p = p->pUL;
         }
     }
@@ -928,7 +929,7 @@ l_nodo crearnodo(l_nodo **p, char a[]) {
     l_nodo *t = new l_nodo;
     strcpy(t->Nom,pos1);
     strcpy(tip,pos2);
-    if (tip == 1) t->Tip = 1;
+    if (strcmp(tip,"1") == 0) t->Tip = 1;
     strcpy(t->fcm,pos3);
     if (strcmp(pos4,"r") == 0 || strcmp(pos4,"h") == 0) {
         if (strcmp(pos4,"r") == 0)  t->r=1;
