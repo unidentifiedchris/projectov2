@@ -51,6 +51,40 @@ void fecha(char fcm[]) {
     sprintf(fcm, "%i%i%i", d, m, y);
 }
 
+void CRU(l_nodo ** p, char nombre[9]){
+	l_nodo *t=new l_nodo,*ax=*p;
+	if(nombre!=NULL){
+		if(strcmp(nombre,"C")==0){
+			printf("Error, esa unidad logica ya existe. Intente de nuevo con otro nombre\n\n");
+			system("pause");
+		}
+		else if(verificarExist(ax,nombre)==1){
+			printf("Error, esa unidad logica ya existe. Intente de nuevo con otro nombre\n\n");
+			system("pause");
+		}
+		else if(ax->pPA!=NULL){
+			printf("Error, actualmente se encuentra en una posicion que no es una unidad logica.\n");
+			printf("No se puede ingresar una unidad logica en esta posicion.");
+			system("pause");
+		}
+		else if(strlen(nombre)>1){
+		printf("Error, la unidad logica solo se puede definir con un (1) caracter. Intente de nuevo.\n\n");
+		system("pause");
+		}
+	else{
+		strcpy(t->Nom,nombre);
+		t->pUL = NULL;
+		t->pFA = NULL;
+        t->pPA = NULL;
+		if(ax->pUL!=NULL){
+			while(ax->pUL!=NULL)
+				ax=ax->pUL;
+		}
+		ax->pUL=t;
+	}
+	}
+}
+
 void MKD(l_nodo** P, char Nombre[9], int h, int r) {
     l_nodo* t, * aux = *P, *bux;
          
@@ -443,6 +477,44 @@ int verificarSoloR(l_nodo* p){
 	}else return 0;
 	if (q > 0) return 1;
 	else return 0;
+}
+
+void morfosis(char *token, l_nodo **p){
+	char *parametro=strtok(token,":"),*valor=parametro;
+	valor=strtok(NULL,":");
+	printf("parametro: %s | valor: %s\n\n",parametro,valor);
+	system("pause");
+
+	if(valor==NULL){
+		printf("Error, el valor introducido no es valido. Intentelo de nuevo\n\n");
+		system("pause");
+	}else{
+
+	if((strcmp(parametro,"n")==0) || (strcmp(parametro,"N")==0)){
+		if((strlen(valor)<0)||(strlen(valor)>9)){
+			printf("Error, el nombre ingresado excede el limite de longitud. Intente nuevamente\n\n");
+			system("pause");
+		}
+		strcpy((*p)->Nom,valor);
+		printf("ahora el nombre del directorio es: %s\n\n",(*p)->Nom);
+		system("pause");
+	}
+	else if((strcmp(parametro,"r")==0) || (strcmp(parametro,"R")==0)){
+		if(strcmp(valor,"1"))
+			(*p)->r=1;
+		else
+			(*p)->r=0;
+	}else if((strcmp(parametro,"h")==0) || (strcmp(parametro,"H")==0)){
+		if(strcmp(valor,"1"))
+			(*p)->h=1;
+		else
+			(*p)->h=0;
+	} 
+	else{
+		printf("Error, el parametro introducido no es valido. Intentelo de nuevo");
+		system("pause");
+	}
+	}
 }
 
 void elimino (l_nodo *p){
@@ -996,7 +1068,7 @@ void unidadCOMP (){
 
 void tokenR(l_nodo **p, l_nodo *l, int v){
 	int op1 = 0, op2 = 0 ;
-	char str[100], *Comando,*pos1,*pos2,*pos3,*pos4,fuente[100],*unidad,destino[100], strAX[9];
+	char str[100], *Comando,*pos1,*pos2,*pos3,*pos4,fuente[100],*unidad,destino[100], strAX[9], *delim;
 l_nodo *respuesta = NULL, *posicion = NULL, *inicio = NULL, *pregunta  = NULL;
 	
 	fflush(stdin);
@@ -1223,16 +1295,19 @@ if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
 	}else
 	if ((strcmp(Comando,"MDD") == 0 ) || (strcmp(Comando,"mdd") == 0 )){
 		strcpy_s(destino,pos1); 
-		Comando = strtok(pos2, ":");
-		if (strcmp (Comando,"/h")){
+		if(pos2==NULL){
+			printf("Error, no se han introducido los parametros a modificar. Intentar de nuevo");
+			system("pause");
+		}else{
+		delim=strtok(pos2,"/");
+		/*if (strcmp (Comando,"/h")){
 			printf("ERROR FALTAN PARAMETROS \n");
 			system("pause");
 			return;		
-		}
-			printf("%s \n", Comando);
-			system("pause");
-		
+		}*/
 		separarD(*p,l,&respuesta,&posicion,destino,strAX);
+		morfosis(delim,&posicion);
+		}
 	}
 	else
 	if ( strcmp(Comando,"SHD") == 0 ){
@@ -1246,12 +1321,8 @@ if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
 	if ( strcmp(Comando,"CRU") == 0 ){
 			strcpy_s(destino,pos1);	
 			unidad = pos1;
-			printf (" pos = %s \n" , pos1 );
-			unidad = strtok(pos1, "/");
-			printf ("  unidad = %s\n", unidad );
-			printf ("  pos = %s\n", pos1 );
-			printf ("  destino = %s\n", unidad );
-			system ("pause");
+			unidad = strtok(pos1, ":/");
+			CRU(&(*p),strupr(unidad));
 	}
 	else
 	if ( strcmp(Comando,"SRU") == 0 ){
