@@ -1300,11 +1300,22 @@ if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
 			system("pause");
 		}else{
 		delim=strtok(pos2,"/");
-		/*if (strcmp (Comando,"/h")){
-			printf("ERROR FALTAN PARAMETROS \n");
-			system("pause");
-			return;		
-		}*/
+		separarD(*p,l,&respuesta,&posicion,destino,strAX);
+		morfosis(delim,&posicion);
+		}
+		strcpy_s(destino,pos1); 
+		if(pos3==NULL){
+			return;
+		}else{
+		delim=strtok(pos3,"/");
+		separarD(*p,l,&respuesta,&posicion,destino,strAX);
+		morfosis(delim,&posicion);
+		}
+		strcpy_s(destino,pos1); 
+		if(pos4==NULL){
+			return;
+		}else{
+		delim=strtok(pos4,"/");
 		separarD(*p,l,&respuesta,&posicion,destino,strAX);
 		morfosis(delim,&posicion);
 		}
