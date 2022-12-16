@@ -1114,6 +1114,11 @@ l_nodo *respuesta = NULL, *posicion = NULL, *inicio = NULL, *pregunta  = NULL;
 
 
 	Comando = strtok(str, " \n");
+	if(Comando==NULL){
+		printf("Error, la ruta ingresada no posee ningun valor\n\n");
+		system("pause");
+		return;
+	}
 	pos1 = strtok(NULL, "  \n");
 	pos2 = strtok(NULL, " \n");
 	pos3 = strtok(NULL, " \n");
