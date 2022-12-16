@@ -644,41 +644,39 @@ void SHD(l_nodo* p, char nombre[], int s, int h) {
     l_nodo* t = p;
     l_nodo* c = p;
     while (c && c->pPA!=NULL) c=c->pPA;
-/*    if (nombre == NULL)
-        t = c;
-    else if (!(strcmp(p->Nom,nombre))) {
-        //BUSCAR
-    } 
-    else printf("Archivo no existe.\n"); */
-
-    if (s && h) {
+    if ((s==1) && (h==1)) {
         printf("-----------------------------------------\n");
-        printf("%c:/\n",c->Nom);
+        printf("%s:/\n",c->Nom);
         mostrarDir(t, 0);
         mostrarArchivos(t, 0, 1);
         printf("-----------------------------------------\n\n");
         system("pause");
-    } else if (h) {
+    } else if (h==1) {
         system("cls");
-        printf("%c:/\n",t->Nom);
+        printf("%s/\n",t->Nom);
         mostrarArchivos(t, 0, 1);
         printf("-------------------------------------------------------------\n\n");
         system("pause");
-    } else if (s) {
+    } else if (s==1) {
         printf("-----------------------------------------\n");
-        printf("%c:/\n",c->Nom);
+        printf("%s/\n",c->Nom);
         mostrarDir(t, 0);
         printf("-----------------------------------------\n\n");
         system("pause");
     } else {
          printf("-----------------------------------------\n");
-        printf("%c:/\n",c->Nom);
-        mostrarDir(t, 0);
-        mostrarArchivos(t, 0, 1);
+        printf("%s/\n",c->Nom);
+		if(p->pFA!=NULL)
+		p=p->pFA;
+        while (p != NULL) {
+			printf("%s     <%c>      %s       r(%i)\n", p->Nom, p->Tip, p->fcm, p->r);
+			p=p->pUL;
+		}
         printf("-----------------------------------------\n\n");
         system("pause");
     }
 }
+
 
 void MDD(l_nodo** p, int x) {
     l_nodo* t = *p,*aux, *pux;
@@ -1474,8 +1472,8 @@ if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
 	if ( strcmp(Comando,"SHD") == 0 ){
         strcpy(destino,pos1);
         if (pos2 == "/s" && pos3 == "/h") SHD(*p,destino,1,1);
-        else if (pos2 == "/h") SHD(*p,destino,0,1);
-        else if (pos2 == "/s") SHD(*p,destino,1,0);
+        else if (strcmp(pos2,"/h")==0) SHD(*p,destino,0,1);
+        else if (strcmp(pos2,"/s")==0) SHD(*p,destino,1,0);
         else SHD(*p,destino,0,0);
 	}
 	else
