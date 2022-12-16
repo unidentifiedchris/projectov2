@@ -4,7 +4,7 @@
 #include <time.h>
 #include <ctype.h>
 
-/* Integrantes del grupo: Juan Hidalgo, Luis Daniel, Matias Silveira */
+/* Integrantes del grupo: Christopher Acosta, Luis Daniel, Matias Silveira */
 
 
 struct l_nodo {
