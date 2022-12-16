@@ -212,8 +212,8 @@ void RMD(l_nodo** p, char txt[9], int O) {
 	if ( O == 1 ){ 
 	pux = *p;
             if ((t == NULL) || (verificarExist(t, txt) == 0)) {
-                printf("Error, ese directorio no existe en el directorio actual\n\n");
-                system("pause");
+                printf("Error, esta directorio no existe \n\n");
+             
                 return;
             }
             else {
@@ -314,7 +314,7 @@ void RMD(l_nodo** p, char txt[9], int O) {
             pux = *p;
             if ((t == NULL) || (verificarExist(t, txt) == 0)) {
                 printf("Error, ese directorio no existe en el directorio actual\n\n");
-                system("pause");
+          
                 return;
             }
             else {
@@ -461,21 +461,13 @@ int verificarSoloR(l_nodo* p){
 	else return 0;
 }
 
-void elimino (l_nodo *p){
-	if (p){
-		elimino(p->pFA);
-		elimino(p->pUL);
-		delete p;
-	}
-
-}
 				
 void MVD(l_nodo** p,  l_nodo **j, int O) {
 	l_nodo *AX , *elim;
 	char hola[9];
 	if 	(((*p == NULL) || (*j == NULL)) || (((*p)->pPA == NULL))){
 	printf("ERROR EL DESTINO EL DIRECTORIO O ES UNA UNIDAD LOGICA A MOVER NO EXISTEN\n");
-	system ("pause");
+
 	return;
 	}else if (O == 0 ){
 		if (validar(*j,(*p)->Nom) == 1 ){
@@ -990,13 +982,20 @@ void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100
 	char *ruta;
 	int contador = 0, fix = 0;
 
-	ruta = strtok (dest,"/");
+	ruta = strtok (dest,"/ \n");
 	
 	while (ruta != NULL){		
 		
 		if (AX != NULL) 
 			 if (strcmp (ruta, ".") == 0){
-				 ANT = (*AX);
+			//	 ANT = (*AX);   cod original
+
+				 	if ((*AX)->pPA != NULL) {
+						ANT = (*AX)->pPA;
+					}else{
+						ANT = (*AX);
+					}
+
 				 *AX = p->pFA;
 					
 				}else if (strcmp (ruta, "..") == 0){
@@ -1020,12 +1019,12 @@ void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100
 					*AX = (*AX)->pFA;
 				}
 
-				printf	("son iguales toke=%s \n" , ruta);
+		
 			}else if ((*AX)->pUL) {
 				if ((strcmp (ruta, ".") != 0) || (strcmp (ruta, "..") != 0)){
 					while (AX){
 						if(strcmp (ruta, (*AX)->Nom) == 0){
-							printf	("son iguales , en hermanos \n");
+					
 							if ((*AX)->pFA != NULL) {
 								ANT = *AX;
 								*AX = (*AX)->pFA;
@@ -1039,7 +1038,7 @@ void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100
 								*AX = (*AX)->pUL;
 								//ANT = *AX;
 							}else{
-								printf	("no son iguales , no tengo mas hermanos \n");
+							
 								contador++;
 								break;
 							}
@@ -1051,8 +1050,8 @@ void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100
 			}
  
 		strcpy(Nom, ruta);
-		ruta = strtok(NULL, "/ ");
-		printf("token: %s\n", ruta);
+		ruta = strtok(NULL, "/ \n");
+	
 		if(ruta == NULL){
 			if (contador < 2){
 				if ((strcmp (Nom, (*AX)->Nom)==0)){
@@ -1074,19 +1073,34 @@ void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100
 
 	// si contador es 0 significa que toda la ruta existe
 	if (contador == 0){
-		if ( ANT->pFA != NULL)
-			(*posicion) = ANT->pFA;
-		else
-			(*posicion) = ANT;
-		while (*posicion){
-			if(strcmp (Nom, (*posicion)->Nom) == 0){
-				break;
-			}
-			if ((*posicion)->pUL) 
-				(*posicion) = (*posicion)->pUL;
+		if (ANT != NULL){
+			if ( ANT->pFA != NULL)
+				(*posicion) = ANT->pFA;
 			else
-				(*posicion) = NULL;
+				(*posicion) = ANT;
+			while (*posicion){
+				if(strcmp (Nom, (*posicion)->Nom) == 0){
+					break;
+				}else  if (strcmp (Nom, ".") == 0){     //cod nuevo
+					(*posicion) = ANT;
+					break;
+				}else if (strcmp (Nom, "..") == 0){
+					if ( ANT->pPA != NULL) 
+						(*posicion) = ANT->pPA;
+					else{
+						(*posicion) = ANT;
+						break;
+					}
+				}                                      //fin cod nuevo
+				if ((*posicion)->pUL) 
+					(*posicion) = (*posicion)->pUL;
+				else
+					(*posicion) = NULL;
+			}
+		}else{
+			(*posicion) = l;
 		}
+
 	}
 
 
@@ -1122,7 +1136,10 @@ l_nodo *respuesta = NULL, *posicion = NULL, *inicio = NULL, *pregunta  = NULL;
 //strcpy( str,  "MKD C:/temp /h" ); //arreglado
 //strcpy( str,  "RMD C:/temp1 " );
 //strcpy( str,  " RMD ./.." );
-//strcpy( str,  "CHD C:/temp/hijo /h" );  
+//strcpy( str,  "CHD C:/ ");  //explota
+//strcpy( str,  "CHD ./ ");	
+//strcpy( str,  "CHD ../ ");  //me deberia dejar en el padre si tiene uno
+//strcpy( str,  "CHD ../. ");  //ERROR me deberia dejar en el padre si tiene uno
 //strcpy( str,  "CRU C:/" );  
 //strcpy( str,  "MVD C:/temp C:/temp1 /o" );  
 
@@ -1137,13 +1154,6 @@ l_nodo *respuesta = NULL, *posicion = NULL, *inicio = NULL, *pregunta  = NULL;
 	pos4 = strtok(NULL, " \n");
 
 	
-
-
-	printf(" comando = %s\n", Comando );
-	printf(" ruta = %s\n", pos1 );
-	printf(" opacion1  = %s\n", pos2);
-	printf(" opcion2 = %s\n", pos3 );
-	printf(" opcion3 = %s\n", pos4 );
 
 	// validacion cantidad de parametros dependiendo del comando
 	//if (strcmp(Comando,"MKD") == 0 ) {
@@ -1172,9 +1182,9 @@ l_nodo *respuesta = NULL, *posicion = NULL, *inicio = NULL, *pregunta  = NULL;
 			}*/
 
 if (( strcmp(Comando,"MKD") == 0 ) || ( strcmp(Comando,"mkd") == 0 )){
-	if (pos1 == NULL) {
-			printf("ERROR , RUTA INVALIDA");
-			system("pause");
+	if ((pos1 == NULL) || (pos4)){
+			printf("ERROR , RUTA INVALIDA \n");
+			
 			return;
 		}else{
 	strcpy_s(destino,pos1);	
@@ -1211,9 +1221,7 @@ if (( strcmp(Comando,"MKD") == 0 ) || ( strcmp(Comando,"mkd") == 0 )){
 				} 
 			
 			}
-			printf ( "opcion1  = %i \n" , op1);
-			printf ( "opcion2  = %i \n" , op2);
-
+	
 	 
 
 			separarD(*p,l,&respuesta,&posicion,destino,strAX);
@@ -1226,9 +1234,9 @@ if (( strcmp(Comando,"MKD") == 0 ) || ( strcmp(Comando,"mkd") == 0 )){
 }
 	else
 if (( strcmp(Comando,"CHD") == 0 ) || ( strcmp(Comando,"chd") == 0 )){
-		if (pos1 == NULL) {
-			printf("ERROR , RUTA INVALIDA");
-			system("pause");
+		if ((pos1 == NULL) || (pos2)){
+			printf("ERROR , RUTA INVALIDA \n");
+	
 			return;
 		}else{
 		strcpy_s(destino,pos1);	
@@ -1238,16 +1246,16 @@ if (( strcmp(Comando,"CHD") == 0 ) || ( strcmp(Comando,"chd") == 0 )){
 			
 			return;
 		}
-		printf("posicion = %s \n" , posicion  );
+
 		
 		*p = posicion;
 	}
 }
 	else
 if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
-	if (pos1 == NULL) {
+	if ((pos1 == NULL) || (pos3)){
 			printf("ERROR , RUTA INVALIDA");
-			system("pause");
+	
 			return;
 		}
 		else{	
@@ -1262,8 +1270,7 @@ if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
 		}
 	}
 	strcpy_s(destino,pos1);	
-	printf ("destino = %s \n",destino);
-	system("pause");
+	
 	separarD(*p,l,&respuesta,&posicion,destino,strAX);
 	*p = l;
 	RMD(&respuesta,strAX,op1);
@@ -1272,7 +1279,7 @@ if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
 	if (( strcmp(Comando,"CPD") == 0 ) || ( strcmp(Comando,"CPD") == 0 )){
 		if (((pos1 == NULL) || (pos2 == NULL)) || (pos4)){
 			printf("ERROR , RUTA INVALIDA");
-			system("pause");
+		
 			return;
 		}
 		else{	
@@ -1296,9 +1303,9 @@ if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
 	}
 	else
 	if (( strcmp(Comando,"MVD") == 0 ) || ( strcmp(Comando,"mvd") == 0 )){
-		if ((pos1 == NULL) || (pos2 == NULL)){
+		if (((pos1 == NULL) || (pos2 == NULL)) || (pos4)){
 			printf("ERROR , RUTA INVALIDA");
-			system("pause");
+		
 			return;
 		}
 		else{
@@ -1324,24 +1331,17 @@ if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
 				
 	}else
 	if ((strcmp(Comando,"MDD") == 0 ) || (strcmp(Comando,"mdd") == 0 )){
-		strcpy_s(destino,pos1); 
-		Comando = strtok(pos2, ":");
-		if (strcmp (Comando,"/h")){
-			printf("ERROR FALTAN PARAMETROS \n");
-			system("pause");
-			return;		
-		}
-			printf("%s \n", Comando);
-			system("pause");
+
+			
 		
-		separarD(*p,l,&respuesta,&posicion,destino,strAX);
+		
 	}
 	else
-	if ( strcmp(Comando,"SHD") == 0 ){
+	if (( strcmp(Comando,"SHD") == 0 ) || ( strcmp(Comando,"shd") == 0 )){
 	
 	}
 	else
-	if ( strcmp(Comando,"CSC") == 0 ){
+	if (( strcmp(Comando,"CSC") == 0 ) || ( strcmp(Comando,"csc") == 0 )){
 	system("cls");
 	}
 	else
