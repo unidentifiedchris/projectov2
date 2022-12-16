@@ -4,7 +4,7 @@
 #include <time.h>
 #include <ctype.h>
 
-/* Integrantes del grupo: Juan Hidalgo, Luis Daniel, Matias Silveira */
+/* Integrantes del grupo: Christopher Acosta, Luis Daniel, Matias Silveira */
 
 
 struct l_nodo {
@@ -270,6 +270,48 @@ void mostrarArchivos(l_nodo* p, int cont, int op) {
             p = p->pUL;
         }
     }
+}
+
+void morfosis(char *token, l_nodo **p){
+	char *parametro=strtok(token,":"),*valor=parametro;
+	valor=strtok(NULL,":");
+	printf("parametro: %s | valor: %s\n\n",parametro,valor);
+	system("pause");
+
+	if(valor==NULL){
+		printf("Error, el valor introducido no es valido. Intentelo de nuevo\n\n");
+		system("pause");
+	}else{
+
+	if((strcmp(parametro,"n")==0) || (strcmp(parametro,"N")==0)){
+		if((strlen(valor)<0)||(strlen(valor)>9)){
+			printf("Error, el nombre ingresado excede el limite de longitud. Intente nuevamente\n\n");
+			system("pause");
+		}else if(verificarExist((*p),valor)==1){
+			printf("Error, ya existe un directorio con ese nombre. Intente de nuevo.\n\n");
+			system("pause");
+		}else{
+		strcpy((*p)->Nom,valor);
+		printf("\n\nAhora el nombre del directorio es: %s\n\n",(*p)->Nom);
+		system("pause");
+		}
+	}
+	else if((strcmp(parametro,"r")==0) || (strcmp(parametro,"R")==0)){
+		if(strcmp(valor,"1")==0)
+			(*p)->r=1;
+		else
+			(*p)->r=0;
+	}else if((strcmp(parametro,"h")==0) || (strcmp(parametro,"H")==0)){
+		if(strcmp(valor,"1")==0)
+			(*p)->h=1;
+		else
+			(*p)->h=0;
+	} 
+	else{
+		printf("Error, el parametro introducido no es valido. Intentelo de nuevo");
+		system("pause");
+	}
+	}
 }
 
 /*COMANDOS*/
@@ -1220,16 +1262,31 @@ if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
 				
 	}else
 	if ((strcmp(Comando,"MDD") == 0 ) || (strcmp(Comando,"mdd") == 0 )){
-		strcpy(destino,pos1); 
-		Comando = strtok(pos2, ":");
-		if (strcmp (Comando,"/h")){
-			printf("ERROR FALTAN PARAMETROS \n");
+		strcpy_s(destino,pos1); 
+		if(pos2==NULL){
+			printf("Error, no se han introducido los parametros a modificar. Intentar de nuevo");
 			system("pause");
-		}
-			printf("%s \n", Comando);
-			system("pause");
-		
+		}else{
+		delim=strtok(pos2,"/");
 		separarD(*p,l,&respuesta,&posicion,destino,strAX);
+		morfosis(delim,&posicion);
+		}
+		strcpy_s(destino,pos1); 
+		if(pos3==NULL){
+			return;
+		}else{
+		delim=strtok(pos3,"/");
+		separarD(*p,l,&respuesta,&posicion,destino,strAX);
+		morfosis(delim,&posicion);
+		}
+		strcpy_s(destino,pos1); 
+		if(pos4==NULL){
+			return;
+		}else{
+		delim=strtok(pos4,"/");
+		separarD(*p,l,&respuesta,&posicion,destino,strAX);
+		morfosis(delim,&posicion);
+		}
 	}
 	else
 	if ( strcmp(Comando,"SHD") == 0 ){
