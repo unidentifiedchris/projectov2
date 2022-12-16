@@ -15,6 +15,48 @@ struct l_nodo {
 
 /*TOOLS*/
 
+void morfosis(char *token, l_nodo **p){
+ 	char *parametro=strtok(token,":"),*valor=parametro;
+ 	valor=strtok(NULL,":");
+ 	printf("parametro: %s | valor: %s\n\n",parametro,valor);
+ 	system("pause");
+
+ 	if(valor==NULL){
+ 		printf("Error, el valor introducido no es valido. Intentelo de nuevo\n\n");
+ 		system("pause");
+ 	}else{
+
+ 	if((strcmp(parametro,"n")==0) || (strcmp(parametro,"N")==0)){
+ 		if((strlen(valor)<0)||(strlen(valor)>9)){
+ 			printf("Error, el nombre ingresado excede el limite de longitud. Intente nuevamente\n\n");
+ 			system("pause");
+ 		}else if(verificarExist((*p),valor)==1){
+ 			printf("Error, ya existe un directorio con ese nombre. Intente de nuevo.\n\n");
+ 			system("pause");
+ 		}else{
+ 		strcpy((*p)->Nom,valor);
+ 		printf("\n\nAhora el nombre del directorio es: %s\n\n",(*p)->Nom);
+ 		system("pause");
+ 		}
+ 	}
+ 	else if((strcmp(parametro,"r")==0) || (strcmp(parametro,"R")==0)){
+ 		if(strcmp(valor,"1")==0)
+ 			(*p)->r=1;
+ 		else
+ 			(*p)->r=0;
+ 	}else if((strcmp(parametro,"h")==0) || (strcmp(parametro,"H")==0)){
+ 		if(strcmp(valor,"1")==0)
+ 			(*p)->h=1;
+ 		else
+ 			(*p)->h=0;
+ 	} 
+ 	else{
+ 		printf("Error, el parametro introducido no es valido. Intentelo de nuevo");
+ 		system("pause");
+ 	}
+ 	}
+ }
+
 int ValidName(char veri[9]) {
     bool ok = true;
     for (int i = 0; i < strlen(veri); i++) {
@@ -737,16 +779,19 @@ void CRU(l_nodo **p, char und[]) {
 
 	while (t && t->pPA != NULL)
 		t=t->pPA;
-	amayus(und);
+	//amayus(und);
     strtok(und,":");
-    strcpy(t->Nom,und);
-    strcat(t->Nom,":");
+    strcpy(aux->Nom,und);
+    strcat(aux->Nom,":");
     char archnom[] = ".txt";
     strcat(und,archnom);
-    creararchivo(&archivo,und);
-
+  //  creararchivo(&archivo,und);
+	t->pUL = aux;
+	aux->h = 0;
+	aux->r = 0;
+	 fecha(aux->fcm);
 	aux->pPA = NULL;
-	aux->pUL = t;
+	aux->pUL = NULL;
 	aux->pFA = NULL;
 	aux->Tip = 1;
 }
@@ -915,37 +960,33 @@ void CPD(l_nodo** p,  l_nodo **j, int O) {
 	}
 }
 
-l_nodo crearnodo(l_nodo **p, char a[]) {
+void crearnodo(l_nodo **p, char a[],l_nodo **t,FILE **archivo) {
     char *padre,*pos1,*pos2,*pos3,*pos4,*pos5;
-    char tip[2];
+    l_nodo *ax = *t;
+    char nombre[100];
 
-    padre = strtok(a,",\n");
+    *archivo = fopen("C.txt","r");
+    if (!(feof(*archivo))) 
+        fscanf(*archivo,"%s",a);
+        fprintf(*archivo,"\n%s",a);
+
+    printf("%s\n",a);
+    padre = strtok(a," \n");
     pos1 = strtok(NULL,",\n");
     pos2 = strtok(NULL,",\n");
     pos3 = strtok(NULL,",\n");
     pos4 = strtok(NULL,",\n");
     pos5 = strtok(NULL,",\n");
 
-    l_nodo *t = new l_nodo;
-    strcpy(t->Nom,pos1);
-    strcpy(tip,pos2);
-    if (strcmp(tip,"1") == 0) t->Tip = 1;
-    strcpy(t->fcm,pos3);
-    if (strcmp(pos4,"r") == 0 || strcmp(pos4,"h") == 0) {
-        if (strcmp(pos4,"r") == 0)  t->r=1;
-        if (strcmp(pos4,"h") == 0) t->h=1;
-    } else if (strcmp(pos4,"r") == 0 && strcmp(pos5,"h") == 0 ) {
-        t->r=1;
-        t->h=1;
-    } else {
-        t->r=0;
-        t->h=0;
-    }
-    t->pPA = *p;
-    t->pFA = NULL;
-    t->pUL = NULL;
-
-    return *t;
+    (*t)->pPA = *p;
+    (*t)->pFA = NULL;
+    (*t)->pUL = NULL;
+    
+    printf("Nombre: %s\n",pos1);
+    printf("Tip: %s\n",pos2);
+    printf("fcm: %s\n",pos3);
+    printf("4: %s\n",pos4);
+    printf("5: %s\n",pos5);
 }
 
 void LRU(l_nodo **p, char *archnom, char nombre[]) {
@@ -959,8 +1000,8 @@ void LRU(l_nodo **p, char *archnom, char nombre[]) {
     while(!(feof(main))) {
         fscanf(main,"%s",a);
         pos1 = strtok(a," ");
-        if (strcmp(pos1,t->Nom) == 0)
-            crearnodo(&t,a);
+        //if (strcmp(pos1,t->Nom) == 0) 
+            //crearnodo(&t,a,);
     /*
         
         l_nodo *t = new l_nodo;
@@ -1069,51 +1110,7 @@ void EXIT(l_nodo *p) {
 	}
 }
 
-
-void morfosis(char *token, l_nodo **p){
-	char *parametro=strtok(token,":"),*valor=parametro;
-	valor=strtok(NULL,":");
-	printf("parametro: %s | valor: %s\n\n",parametro,valor);
-	system("pause");
-
-	if(valor==NULL){
-		printf("Error, el valor introducido no es valido. Intentelo de nuevo\n\n");
-		system("pause");
-	}else{
-
-	if((strcmp(parametro,"n")==0) || (strcmp(parametro,"N")==0)){
-		if((strlen(valor)<0)||(strlen(valor)>9)){
-			printf("Error, el nombre ingresado excede el limite de longitud. Intente nuevamente\n\n");
-			system("pause");
-		}else if(verificarExist((*p),valor)==1){
-			printf("Error, ya existe un directorio con ese nombre. Intente de nuevo.\n\n");
-			system("pause");
-		}else{
-		strcpy((*p)->Nom,valor);
-		printf("\n\nAhora el nombre del directorio es: %s\n\n",(*p)->Nom);
-		system("pause");
-		}
-	}
-	else if((strcmp(parametro,"r")==0) || (strcmp(parametro,"R")==0)){
-		if(strcmp(valor,"1")==0)
-			(*p)->r=1;
-		else
-			(*p)->r=0;
-	}else if((strcmp(parametro,"h")==0) || (strcmp(parametro,"H")==0)){
-		if(strcmp(valor,"1")==0)
-			(*p)->h=1;
-		else
-			(*p)->h=0;
-	} 
-	else{
-		printf("Error, el parametro introducido no es valido. Intentelo de nuevo");
-		system("pause");
-	}
-	}
-}
-
 /*PRINCIPALES*/
-
 void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100], char Nom[9]){
 	l_nodo *ANT = NULL;
 	*AX = l ;
@@ -1131,7 +1128,7 @@ void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100
 				 	if ((*AX)->pPA != NULL) {
 						ANT = (*AX)->pPA;
 					}else{
-				 ANT = (*AX);
+						ANT = (*AX);
 					}
 
 				 *AX = p->pFA;
@@ -1196,9 +1193,13 @@ void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100
 					ANT = ANT->pPA;
 					*AX =  ANT;
 				}else{
-					if ((strcmp (Nom, ANT->Nom)==0) && (*AX)->pPA != NULL) {
-						ANT = (*AX)->pPA->pPA;
-						//(*AX) = (*AX)->pPA;
+					if (ANT != NULL){     
+						if ((strcmp (Nom, ANT->Nom)==0) && (*AX)->pPA != NULL) {
+							ANT = (*AX)->pPA->pPA;
+							//(*AX) = (*AX)->pPA;
+						}
+					}else{
+						ANT = (*AX);
 					}
 				}
 				}else{
@@ -1212,13 +1213,13 @@ void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100
 	// si contador es 0 significa que toda la ruta existe
 	if (contador == 0){
 		if (ANT != NULL){
-		if ( ANT->pFA != NULL)
-			(*posicion) = ANT->pFA;
-		else
-			(*posicion) = ANT;
-		while (*posicion){
-			if(strcmp (Nom, (*posicion)->Nom) == 0){
-				break;
+			if ( ANT->pFA != NULL)
+				(*posicion) = ANT->pFA;
+			else
+				(*posicion) = ANT;
+			while (*posicion){
+				if(strcmp (Nom, (*posicion)->Nom) == 0){
+					break;
 				}else  if (strcmp (Nom, ".") == 0){     //cod nuevo
 					(*posicion) = ANT;
 					break;
@@ -1228,26 +1229,23 @@ void separarD(l_nodo* p, l_nodo* l , l_nodo **AX,l_nodo **posicion,char dest[100
 					else{
 						(*posicion) = ANT;
 						break;
-			}
+					}
 				}                                      //fin cod nuevo
-			if ((*posicion)->pUL) 
-				(*posicion) = (*posicion)->pUL;
-			else
-				(*posicion) = NULL;
-		}
+				if ((*posicion)->pUL) 
+					(*posicion) = (*posicion)->pUL;
+				else
+					(*posicion) = NULL;
+			}
 		}else{
 			(*posicion) = l;
-	}
+		}
 
 	}
-
-
-
 }
-	
+
 int tokenR(l_nodo **p, l_nodo *l){
 	int op1 = 0, op2 = 0 ;
-	char str[100], *Comando,*pos1,*pos2,*pos3,*pos4,fuente[100],*unidad,destino[100], strAX[9], *delim;
+	char str[100], *Comando,*pos1,*pos2,*pos3,*pos4,fuente[100],*unidad,destino[100], strAX[9];
 l_nodo *respuesta = NULL, *posicion = NULL, *inicio = NULL, *pregunta  = NULL;
 	
 	fflush(stdin);
@@ -1558,11 +1556,9 @@ int main() {
     int op = -1;
     char randoma[100];
 
-    if (main = fopen("C.txt","rb")) {
+    if (main = fopen("C.txt","r")) {
         if (!(feof(main))) {
-            fscanf(main,"%s\n",randoma);
-            Root->pFA = t;
-            *t = crearnodo(&Root,randoma);
+            crearnodo(&Root,randoma,&t,&main);
             //LRU(&Root,archnom,Root->Nom);
         }
         while(op != 0) {
