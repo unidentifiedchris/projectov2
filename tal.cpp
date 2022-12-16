@@ -588,12 +588,12 @@ void CPD(l_nodo** p,  l_nodo **j, int O) {
 
 	return;
    }else if (O == 0 ){
-	   if ((verificarSoloR((*p)->pUL) == 1 ) || ((*p)->r)== 1){
+	   if  (validar(*j,(*p)->Nom) == 1 ){
 		printf("el destino ya contiene un directorio con ese mismo nombre\n");
 
 	return;	
 	   }
-     	if (verificarSoloR(*p) == 1 ){
+     	if((verificarSoloR((*p)->pUL) == 1 ) || ((*p)->r)== 1){
 			printf("el directorio a mover o sus hijos son solo lectura\n");
 			
 			return;
