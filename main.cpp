@@ -4,7 +4,7 @@
 #include <time.h>
 #include <ctype.h>
 
-/* Integrantes del grupo: Christopher Acosta, Luis Daniel, Matias Silveira */
+/* Integrantes del grupo: Juan Hidalgo, Luis Daniel, Matias Silveira */
 
 
 struct l_nodo {
@@ -336,7 +336,7 @@ void MKD(l_nodo** P, char Nombre[9], int h, int r) {
 	return;
 	}
             t = new l_nodo;
-            strcpy_s(t->Nom, Nombre);
+            strcpy(t->Nom, Nombre);
             t->pUL = NULL;
             t->pFA = NULL;
             t->pPA = aux;
@@ -740,42 +740,6 @@ void CRU(l_nodo **p, char und[]) {
 	aux->pUL = t;
 	aux->pFA = NULL;
 	aux->Tip = 1;
-}
-
-void FRU(l_nodo **p, char txt[]) { 
-    char op;
-    l_nodo* t = *p;
-    
-    while (t != NULL) {
-        if (strcmp(t->Nom,txt) == 0) {
-            printf("Estas seguro que quieres formatear la unidad logica %s? (S/N)",(*p)->Nom);
-            scanf("%c",&op);
-            if (op == 'S' || op == 's') {
-                eliminarDirHermanos(&(t->pFA));
-                printf("Unidad logica %s formateada.",(*p)->Nom);
-            }
-            else if (op == 'N' || op == 'n')
-                printf("Operacion cancelada.\n");
-        } else {
-            t=t->pUL;
-        }
-    }
-}
-
-void ERU(l_nodo **p, char txt[]) {
-    char op;
-    l_nodo *ax = *p;
-    while (ax && ax->pPA !=  NULL) {
-        ax= ax->pPA;
-    }
-    printf("Estas seguro que quieres formatear la unidad logica %s? (S/N)",(*p)->Nom);
-    scanf("%c",&op);
-    if (op == 'S' || op == 's') {
-
-        eliminarDir(ax,(*ax)->Nom);
-    }
-    else if (op == 'N' || op == 'n')
-        printf("Operacion cancelada.\n");
 }
 
 void SRU(l_nodo *p,char nombre[]) {
@@ -1389,7 +1353,7 @@ if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
 	else
 	if (( strcmp(Comando,"LRU") == 0 ) || ( strcmp(Comando,"lru") == 0 )){
 	
-	}
+	}/*
 	else
 	if (( strcmp(Comando,"FRU") == 0 ) || ( strcmp(Comando,"fru") == 0 )){
         strcpy(destino,pos1);
@@ -1399,7 +1363,7 @@ if (( strcmp(Comando,"RMD") == 0 ) || ( strcmp(Comando,"rmd") == 0 )){
 	if (( strcmp(Comando,"ERU") == 0 ) || ( strcmp(Comando,"eru") == 0 )){
         strcpy(destino,pos1);
         ERU(p,destino);
-	}
+	}*/
 	else
 	if (( strcmp(Comando,"EXIT") == 0 ) || ( strcmp(Comando,"exit") == 0 )){
         EXIT(*p);
